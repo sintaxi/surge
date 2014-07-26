@@ -4,9 +4,7 @@
 
 ### Rationale
 
-The web promised us shipping web projects would be fast, easy, and low risk. Surge delivers on that promise by making rapid deployment of front-end projects impossible to fuck up.
-
-Run `surge` within any directory and that directory becomes live on the web at that very moment. Both account and app creation is implicit, so there is no setup or registration. Simply install surge and start tossing projects in the wild without a second thought.
+The web promised us shipping web projects would be fast, easy, and low risk. Surge delivers on that promise by making rapid deployment of front-end projects impossible to fuck up. To publish a web project run `surge` within any directory and that directory becomes live on the web at that very moment. Both account and app creation is implicit, so there is no setup or registration. Simply install surge and start tossing projects in the wild without a second thought.
 
 ### Features
 
@@ -33,7 +31,7 @@ Publish current working directory.
 
 If you are using tools like Grunt and Gulp and you have a compile directory. From within the root of your project pass in the path to your output direcotory to only upload your compiled assets. (note - you may want to also `.gitignore` that direcory in order to keep compiled assets out of your repo.
 
-    surge output
+    surge www
 
 If wanting a particular subdomain just pass in as an optional arg
 
