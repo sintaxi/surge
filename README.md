@@ -51,3 +51,6 @@ As an alternative you may pass surge a data stream.
 
     echo "<h1>Hello World</h1>" | surge
 
+## License
+
+Copyright © 2013–2014 Chloi Inc. All rights reserved.
