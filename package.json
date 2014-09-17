@@ -1,6 +1,6 @@
 {
   "name": "surge",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "the `npm` of web publishing",
   "main": "./lib/surge.js",
   "scripts": {
