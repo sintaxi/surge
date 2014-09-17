@@ -2,8 +2,17 @@
   "name": "surge",
   "version": "0.3.1",
   "description": "the `npm` of web publishing",
-  "main": "./lib/surge.js",
+  "homepage": "http://surge.sh",
   "license": "Copyright © 2013–2014 Chloi Inc.",
+  "author": "Brock Whitten <brock@chloi.io>",
+  "contributors":
+  [ "Brock Whitten   <brock@chloi.io>"
+  , "Rob Ellis       <rob@chloi.io>"
+  , "Kenneth Ormandy <kenneth@chloi.io>"
+  ],
+  "bin": "./lib/cli.js",
+  "main": "./lib/surge.js",
+  "repository": "git@github.com:sintaxi/surge.git",
   "scripts": {
     "test": "mocha test"
   },
@@ -18,8 +27,6 @@
     "yargs": "1.3.1"
   },
   "devDependencies": {
-    "mocha":""
-  },
-  "bin": "./lib/cli.js",
-  "author": "Brock Whitten <brock@chloi.io>",
+    "mocha": ""
+  }
 }
