@@ -10,12 +10,12 @@ Both account and app creation is implicit, so there is no setup or registration.
 
 ## Features
 
-- Single command deployment.
+- Single command deployment
 - Free production grade static hosting
-- Free CNAME support.
-- Free SSL support.
-- Custom 404.html pages.
-- HTML5 mode 200.html pages.
+- Free CNAME support
+- Free SSL support
+- Custom `404.html` pages
+- HTML5 mode `200.html` pages
 
 ## Install
 
@@ -53,4 +53,4 @@ As an alternative you may pass surge a data stream.
 
 ## License
 
-Copyright © 2013–2014 Chloi Inc. All rights reserved.
+Copyright © 2013–2014 [Chloi Inc.](http://chloi.io) All rights reserved.
