@@ -3,7 +3,7 @@
   "version": "0.3.1",
   "description": "the `npm` of web publishing",
   "homepage": "http://surge.sh",
-  "license": "Copyright © 2013–2014 Chloi Inc.",
+  "license": "ISC",
   "author": "Brock Whitten <brock@chloi.io>",
   "contributors":
   [ "Brock Whitten   <brock@chloi.io>"
@@ -13,6 +13,7 @@
   "bin": "./lib/cli.js",
   "main": "./lib/surge.js",
   "repository": "git@github.com:sintaxi/surge.git",
+  "main": "./lib/surge.js",
   "scripts": {
     "test": "mocha test"
   },

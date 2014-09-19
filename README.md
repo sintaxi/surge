@@ -53,4 +53,6 @@ As an alternative you may pass surge a data stream.
 
 ## License
 
-Copyright © 2013–2014 [Chloi Inc.](http://chloi.io) All rights reserved.
+[The ISC License (ISC)](LICENSE.md)
+
+Copyright © 2013–2014, [Chloi Inc.](http://chloi.io) All rights reserved.
