@@ -17,7 +17,7 @@
     "yargs": "1.3.1"
   },
   "devDependencies": {
-    "mocha":""
+    "mocha": ""
   },
   "bin": "./lib/cli.js",
   "author": "Brock Whitten <brock@chloi.io>",
