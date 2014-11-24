@@ -18,8 +18,6 @@ Run `surge --help` to see the following overview of the `surge` command...
     -p, --project       path to projects asset directory (./)
     -d, --domain        domain of your project (<random>.surge.sh)
     -e, --endpoint      domain of API server (surge.sh)
-    -a, --add           add collaborator via email address
-    -r, --rem           remove collaborator via email address
     -v, --verbose       verbose output
     -h, --help          show this help message
 
