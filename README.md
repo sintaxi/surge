@@ -2,13 +2,10 @@
 
 > Publish web apps to a CDN with a single command and no setup required.
 
+[![NPM](https://nodei.co/npm/surge.png?global=true)](https://nodei.co/npm/surge/)
+
 _surge_ is a Command Line Interface that runs on the nodejs runtime (surge's only external dependency). Surge can be installed using npm (via `sudo npm install -g surge`). Once installed, `surge` is available from within your terminal. The following command will deploy the current working directory to the surge servers where the application will be available at sintaxi.com.
 
-       path to project (defaults to current working dir)
-             |
-             | your domain (will propt you if not passed in)
-             |     |
-             ↓     ↓
     $ surge ./ sintaxi.com
 
 Run `surge --help` to see the following overview of the `surge` command...
