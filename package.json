@@ -3,6 +3,7 @@
   "version": "0.4.0",
   "description": "the `npm` of web publishing",
   "main": "./lib/surge.js",
+  "repository": "https://github.com/sintaxi/surge",
   "scripts": {
     "test": "mocha test"
   },
