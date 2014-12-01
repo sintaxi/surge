@@ -19,6 +19,7 @@ Run `surge --help` to see the following overview of the `surge` command...
     -d, --domain        domain of your project (<random>.surge.sh)
     -e, --endpoint      domain of API server (surge.sh)
     -v, --verbose       verbose output
+    -V, --version       show the version number
     -h, --help          show this help message
 
   Shorthand usage:
@@ -41,4 +42,3 @@ If you’re using tools like Grunt, Gulp, or a static site generator like Jekyll
     surge www
 
 You may also add this directory to your `.gitignore` to keep your compiled assets out of your Git history.
-
