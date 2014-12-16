@@ -1,6 +1,6 @@
 {
   "name": "surge",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "the `npm` of web publishing",
   "main": "./lib/surge.js",
   "repository": "https://github.com/sintaxi/surge",
