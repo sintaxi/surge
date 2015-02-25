@@ -11,19 +11,28 @@ _surge_ is a Command Line Interface that runs on the nodejs runtime (surge's onl
 Run `surge --help` to see the following overview of the `surge` command...
 
 ```
-  Usage:
+ Usage:
     surge [options]
 
-  Options:
+  Options: 
     -p, --project       path to projects asset directory (./)
     -d, --domain        domain of your project (<random>.surge.sh)
     -e, --endpoint      domain of API server (surge.sh)
-    -v, --verbose       verbose output
+    -g, --grant         grant publish access (email address)
+    -r, --revoke        revoke publish access (email address)
     -V, --version       show the version number
     -h, --help          show this help message
 
   Shorthand usage:
-    surge [project] [domain]
+    surge [project path] [domain]
+
+  Additional commands:
+    surge whoami        show who you are logged in as
+    surge logout        expire local token
+    surge login         only performs authentication step
+    surge list          list all domains you have access to
+
+  When in doubt, run surge from within you project directory.
 
 ```
 
