@@ -4,22 +4,30 @@
 
 [![NPM](https://nodei.co/npm/surge.png?global=true)](https://nodei.co/npm/surge/)
 
-_surge_ is a Command Line Interface that runs on the nodejs runtime (surge's only external dependency). Surge can be installed using npm (via `sudo npm install -g surge`). Once installed, `surge` is available from within your terminal. The following command will deploy the current working directory to the surge servers where the application will be available at sintaxi.com.
+This is the CLI client for the surge.sh hosted service. Its what gets installed when you run `npm install -g surge`.
+
+This CLI library manages access tokens locally and handles the upload and subsiquent reporting when you publish a project using surge.
+
+## Usage
+
+It's easier to show than tell so lets get to it! The following command will deploy the current working directory to the surge servers where the application will be available at sintaxi.com.
 
     $ surge ./ sintaxi.com
 
 Run `surge --help` to see the following overview of the `surge` command...
 
 ```
- Usage:
+  Surge - single-command web publishing. (v0.7.2)
+
+  Usage:
     surge [options]
 
-  Options: 
+  Options:
     -p, --project       path to projects asset directory (./)
     -d, --domain        domain of your project (<random>.surge.sh)
     -e, --endpoint      domain of API server (surge.sh)
-    -g, --grant         grant publish access (email address)
-    -r, --revoke        revoke publish access (email address)
+    -a, --add           adds user to list of collaborators (email address)
+    -r, --remove        removes user from list of collaborators (email address)
     -V, --version       show the version number
     -h, --help          show this help message
 
