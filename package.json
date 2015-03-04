@@ -1,13 +1,9 @@
 {
   "name": "surge",
-  "version": "0.8.0",
   "description": "the `npm` of web publishing",
-  "main": "./lib/surge.js",
+  "version": "0.8.0",
+  "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./lib/cli.js",
-  "repository": "https://github.com/sintaxi/surge",
-  "scripts": {
-    "test": "mocha test"
-  },
   "dependencies": {
     "du": "^0.1.0",
     "fstream-ignore": "1.0.1",
@@ -19,13 +15,16 @@
     "split": "^0.3.1",
     "tar": "1.0.0",
     "tar.gz": "0.1.1",
-    "yargs": "1.3.1",
-    "url-parse-as-address": "1.0.0"
+    "url-parse-as-address": "1.0.0",
+    "yargs": "1.3.1"
   },
   "devDependencies": {
-    "mocha": ""
+    "mocha": "*"
   },
-  "bin": "./lib/cli.js",
-  "author": "Brock Whitten <brock@chloi.io>",
-  "license": "ISC"
+  "license": "ISC",
+  "main": "./lib/surge.js",
+  "repository": "sintaxi/surge",
+  "scripts": {
+    "test": "mocha test"
+  }
 }
