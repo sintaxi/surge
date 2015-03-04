@@ -4,13 +4,13 @@
 
 [![NPM](https://nodei.co/npm/surge.png?global=true)](https://nodei.co/npm/surge/)
 
-This is the CLI client for the surge.sh hosted service. Its what gets installed when you run `npm install -g surge`.
+This is the CLI client for the surge.sh hosted service. It's what gets installed when you run `npm install -g surge`.
 
-This CLI library manages access tokens locally and handles the upload and subsiquent reporting when you publish a project using surge.
+This CLI library manages access tokens locally and handles the upload and subsequent reporting when you publish a project using surge.
 
 ## Usage
 
-It's easier to show than tell so lets get to it! The following command will deploy the current working directory to the surge servers where the application will be available at sintaxi.com.
+It's easier to show than tell so let's get to it! The following command will deploy the current working directory to the surge servers where the application will be available at sintaxi.com.
 
     $ surge ./ sintaxi.com
 
@@ -49,10 +49,10 @@ Run `surge --help` to see the following overview of the `surge` command...
 - Custom CNAME & custom SSL
 - Fallback 404.html pages
 - HTML5 mode 200.html pages
-- stays out of `git`s way
-- supports clean URLs && trailing slashes `/`
+- Stays out of `git`s way
+- Supports clean URLs && trailing slashes `/`
 - Implicit signup
-- supports CNAME files
+- Supports CNAME files
 
 If you’re using tools like Grunt, Gulp, or a static site generator like Jekyll, your files are output into a compile directory like `_site/`, `build/`, or `www/`. From the root of your project, pass Surge the path to this directory to upload your compiled assets.
 
