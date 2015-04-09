@@ -29,5 +29,9 @@
   "repository": "sintaxi/surge",
   "scripts": {
     "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sintaxi/surge.git"
   }
 }
