@@ -7,31 +7,30 @@
   "dependencies": {
     "du": "0.1.0",
     "fstream-ignore": "1.0.2",
+    "minimist": "1.1.1",
     "moniker": "0.1.2",
     "netrc": "0.1.3",
-    "prompt": "~0.2.14",
+    "opn": "1.0.1",
     "progress": "1.1.8",
+    "prompt": "~0.2.14",
+    "read": "1.0.5",
     "request": "2.40.0",
     "split": "0.3.1",
     "surge-ignore": "0.2.0",
     "tar": "1.0.0",
     "tar.gz": "0.1.1",
-    "url-parse-as-address": "1.0.0",
-    "read": "1.0.5",
-    "minimist": "1.1.1",
-    "opn": "1.0.1"
+    "url-parse-as-address": "1.0.0"
   },
   "devDependencies": {
     "mocha": "*"
   },
   "license": "ISC",
   "main": "./lib/surge.js",
-  "repository": "sintaxi/surge",
-  "scripts": {
-    "test": "mocha test"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/sintaxi/surge.git"
+  },
+  "scripts": {
+    "test": "mocha test"
   }
 }
