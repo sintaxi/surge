@@ -19,6 +19,7 @@
     "surge-ignore": "0.2.0",
     "tar": "1.0.0",
     "tar.gz": "0.1.1",
+    "update-notifier": "^0.4.0",
     "url-parse-as-address": "1.0.0"
   },
   "devDependencies": {
