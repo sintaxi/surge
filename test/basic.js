@@ -35,4 +35,16 @@ describe('surge', function () {
 
   })
 
+  it('should provide an error message when the command isn’t valid', function (done) {
+    nixt({ colors: false })
+      .run(surge + '--deploy')
+      .expect(function (result) {
+        // Something like…
+        // `--deploy` is not a surge command
+        should(result.stdout).match(/--deploy/)
+        should(result.stdout).match(/not/)
+      })
+      .end(done)
+  })
+
 })
