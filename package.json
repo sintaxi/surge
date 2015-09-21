@@ -22,11 +22,13 @@
     "minimist": "1.1.1"
   },
   "devDependencies": {
-    "mocha": "*"
+    "mocha": "*",
+    "nixt": "0.4.1",
+    "should": "7.1.0"
   },
   "license": "ISC",
   "main": "./lib/surge.js",
-  "repository": "sintaxi/surge",
+  "ignore": ["test"],
   "scripts": {
     "test": "mocha test"
   },
