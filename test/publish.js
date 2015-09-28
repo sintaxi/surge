@@ -41,7 +41,7 @@ describe('publish', function (done) {
   it('`surge`', function (done) {
     this.timeout(5000)
     nixt(opts)
-      .run(surge './test/fixtures/cli-test.surge.sh cli-test.surge.sh')
+      .run(surge + './test/fixtures/cli-test.surge.sh cli-test.surge.sh')
       .expect(function (result) {
         should(result.stdout).match(/1 file/)
         should(result.stdout).match(/Success! Project is published and running at cli-test/)
@@ -52,7 +52,7 @@ describe('publish', function (done) {
   it('`surge ./`', function (done) {
     this.timeout(5000)
     nixt(opts)
-      .run(surge './test/fixtures/cli-test.surge.sh')
+      .run(surge + './test/fixtures/cli-test.surge.sh')
       .on(/.*domain:.*/).respond('cli-test.surge.sh\n')
       .expect(function (result) {
         should(result.stdout).match(/1 file/)
@@ -64,7 +64,7 @@ describe('publish', function (done) {
   it('`surge --project`', function (done) {
     this.timeout(5000)
     nixt(opts)
-      .run(surge '--project ./test/fixtures/cli-test.surge.sh')
+      .run(surge + '--project ./test/fixtures/cli-test.surge.sh')
       .on(/.*domain:.*/).respond('cli-test.surge.sh\n')
       .expect(function (result) {
         should(result.stdout).match(/1 file/)
@@ -76,7 +76,7 @@ describe('publish', function (done) {
   it('`surge --domain`', function (done) {
     this.timeout(5000)
     nixt(opts)
-      .run(surge '--domain cli-test.surge.sh')
+      .run(surge + '--domain cli-test.surge.sh')
       .on(/.*project path:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
       .on(/.*domain:.*/).respond('\n')
       .expect(function (result) {
@@ -89,7 +89,7 @@ describe('publish', function (done) {
   it('`surge --project --domain`', function (done) {
     this.timeout(5000)
     nixt(opts)
-      .run(surge '--domain cli-test.surge.sh --project ./test/fixtures/cli-test.surge.sh')
+      .run(surge + '--domain cli-test.surge.sh --project ./test/fixtures/cli-test.surge.sh')
       .expect(function (result) {
         should(result.stdout).match(/1 file/)
         should(result.stdout).match(/Success! Project is published and running at cli-test/)
