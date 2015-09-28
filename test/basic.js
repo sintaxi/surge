@@ -48,6 +48,7 @@ describe('surge', function () {
   })
 
   describe('should be able to login', function (done) {
+    this.timeout(2500)
     it('`surge login`', function (done) {
       nixt({ colors: false })
         .exec(surge + 'logout') // Logout before the test starts
@@ -60,7 +61,23 @@ describe('surge', function () {
           // Possibly not returning the right codes right now?
           // should(result.code).equal(1)
         })
-        .exec(surge + 'logout') // Logout again afterwards
+        .end(done)
+    })
+    it('`surge whoami`', function (done) {
+      nixt({ colors: false })
+        .run(surge + 'whoami')
+        .expect(function (result) {
+          should(result.stdout).match(/Logged in as kenneth/)
+        })
+        .end(done)
+    })
+
+    it('`surge logout`', function (done) {
+      nixt({ colors: false })
+        .run(surge + 'logout') // Logout again afterwards
+        .expect(function (result) {
+          should(result.stdout).match(/Token removed from /)
+        })
         .end(done)
     })
   })
