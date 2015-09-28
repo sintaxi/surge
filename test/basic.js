@@ -47,4 +47,22 @@ describe('surge', function () {
       .end(done)
   })
 
+  describe('should be able to login', function (done) {
+    it('`surge login`', function (done) {
+      nixt({ colors: false })
+        .exec(surge + 'logout') // Logout before the test starts
+        .run(surge + 'login')
+        .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
+        .on(/.*password:.*/).respond('12345\n')
+        .expect(function (result) {
+          should(result.stdout).match(/Logged in as kenneth/)
+
+          // Possibly not returning the right codes right now?
+          // should(result.code).equal(1)
+        })
+        .exec(surge + 'logout') // Logout again afterwards
+        .end(done)
+    })
+  })
+
 })
