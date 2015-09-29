@@ -97,5 +97,18 @@ describe('publish', function (done) {
       // .exec(surge + 'logout') // Logout after the test is over
       .end(done)
   })
+  it('Should not publish a project a nonexistent directory', function (done) {
+    this.timeout(5000)
+    nixt(opts)
+      .run(surge + '--project ./test/fixtures/cli-test-0.surge.sh')
+      .expect(function (result) {
+        console.log(result)
+        should(result.stdout).match(/No such file or directory/)
+        should(result.stdout).not.match(/{[1-9]+:[1-9]+}/)
+        should(result.stdout).match(/test\/fixtures\/cli-test-0\.surge\.sh/)
+      })
+      // .exec(surge + 'logout') // Logout after the test is over
+      .end(done)
+  })
 
 })
