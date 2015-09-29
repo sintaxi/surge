@@ -82,4 +82,20 @@ describe('surge', function () {
     })
   })
 
+  it('`surge list`', function (done) {
+    nixt({ colors: false, newlines: true })
+      .exec(surge + 'logout') // Logout before the test starts
+      .run(surge + 'list')
+      .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
+      .on(/.*password:.*/).respond('12345\n')
+      .expect(function (result) {
+        should(result.stdout).match(/cli-test-2\.surge\.sh/)
+        should(result.stdout).match(/cli-test-3\.surge\.sh/)
+        should(result.stdout).not.match(/www\.cli-test-3\.surge\.sh/)
+        should(result.stdout).match(/www\.cli-test-4\.surge\.sh/)
+        should(result.stdout).not.match(/cli-test-0\.surge\.sh/)
+      })
+      .end(done)
+  })
+
 })
