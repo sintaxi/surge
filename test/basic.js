@@ -1,11 +1,12 @@
 var nixt = require('nixt')
 var should = require('should')
-var surge = 'node ./lib/cli.js '
+var pkg = require('../package.json')
+
+var surge = 'node ' + pkg.bin + ' '
 var opts = {
   colors: false,
   newlines: false
 }
-var pkg = require('../package.json')
 
 describe('surge', function () {
 
