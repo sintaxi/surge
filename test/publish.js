@@ -20,6 +20,7 @@ describe('publish', function (done) {
       .on(/.*project path:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
       .on(/.*domain:.*/).respond('cli-test.surge.sh\n')
       .expect(function (result) {
+        should(result.stdout).not.match('12345')
         should(result.stdout).match(/1 file/)
         should(result.stdout).match(/Success! Project is published and running at cli-test/)
       })
