@@ -108,6 +108,17 @@ describe('publish', function (done) {
       })
       .end(done)
   })
+  it('Should not publish a project it doesn’t have access to', function (done) {
+    this.timeout(5000)
+    nixt(opts)
+      .run(surge + './test/fixtures/cli-test.surge.sh cli-test-5.surge.sh')
+      .expect(function (result) {
+        should(result.stdout).match(/Aborted/)
+        should(result.stdout).match(/cli-test-5\.surge\.sh/)
+        should(result.stdout).match(/cli-test\.surge\.sh/)
+      })
+      .end(done)
+  })
 
   after(function (done) {
     nixt(opts)
