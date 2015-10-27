@@ -119,6 +119,16 @@ describe('publish', function (done) {
       })
       .end(done)
   })
+  it('Should not publish a project if the path provided is not a directory', function(done) {
+    this.timeout(5000)
+    nixt(opts)
+      .run(surge + './test/fixtures/cli-test-6.surge.sh/Not.a.directory')
+      .expect(function (result) {
+        should(result.stdout).match(/Aborted/)
+        should(result.stdout).match(/is not a directory/)
+      })
+      .end(done)
+  })
 
   after(function (done) {
     nixt(opts)
