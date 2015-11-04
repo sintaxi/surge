@@ -3,12 +3,15 @@ var should = require('should')
 var pkg = require('../package.json')
 
 var surge = 'node ' + pkg.bin + ' '
+var ci = process.env.CI || false
+var endpoint = ci ? '' : ' -e localhost:5001'
 var opts = {
   colors: false,
   newlines: true
 }
 
 describe('plus', function () {
+  if (!ci) {
 
   var subdomain = ''
 
@@ -16,8 +19,8 @@ describe('plus', function () {
     this.timeout(5000)
 
     nixt(opts)
-      .exec(surge + 'logout -e localhost:5001') // Logout before the test starts
-      .run(surge + ' -e localhost:5001')
+      .exec(surge + 'logout' + endpoint) // Logout before the test starts
+      .run(surge + endpoint)
       .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
       .on(/.*password:.*/).respond('12345\n')
       .on(/.*project path:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
@@ -32,7 +35,7 @@ describe('plus', function () {
     this.timeout(10000)
 
     nixt(opts)
-      .run(surge + 'plus -e localhost:5001')
+      .run(surge + 'plus' + endpoint)
       .on(/.*domain:.*/).respond(subdomain + '\n')
       .on(/.*Would you like to charge.*/).respond('yes\n')
       // .on(/.*card number:.*/).respond('4242-4242-4242-4242\n')
@@ -52,7 +55,7 @@ describe('plus', function () {
     this.timeout(10000)
 
     nixt(opts)
-      .run(surge + '-e localhost:5001 ssl ' + subdomain)
+      .run(surge + endpoint + ' ssl ' + subdomain)
       .on(/.*pem file:.*/).respond('./test/fixtures/ssl/test.pem\n')
       .on(/.*Would you like to charge.*/).respond('yes\n')
       .expect(function (result) {
@@ -90,7 +93,7 @@ describe('plus', function () {
 
   afterEach(function (done) {
     nixt(opts)
-      .run(surge + 'teardown -e localhost:5001')
+      .run(surge + 'teardown' + endpoint)
       .on(/.*domain:.*/).respond(subdomain + '\n')
       .expect(function (result) {
         should(result.stdout).match(/Success/)
@@ -98,4 +101,8 @@ describe('plus', function () {
       })
       .end(done)
   })
+
+  } else {
+    console.warn('Plus tests aren’t yet configured to run on CI.')
+  }
 })
