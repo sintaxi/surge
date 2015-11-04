@@ -104,7 +104,7 @@ describe('publish', function (done) {
       .expect(function (result) {
         should(result.stdout).match(/No such file or directory/)
         should(result.stdout).not.match(/{[1-9]+:[1-9]+}/)
-        should(result.stdout).match(/test\/fixtures\/cli-test-0\.surge\.sh/)
+        should(result.stdout).match(/cli-test-0.surge.sh/)
       })
       .end(done)
   })
