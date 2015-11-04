@@ -12,7 +12,7 @@ describe('plus', function () {
 
   var subdomain = ''
 
-  before(function (done) {
+  beforeEach(function (done) {
     this.timeout(5000)
 
     nixt(opts)
@@ -23,7 +23,6 @@ describe('plus', function () {
       .on(/.*project path:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
       .on(/.*domain:.*/).respond('\n')
       .expect(function (result) {
-        console.log(result.stdout)
         subdomain = result.stdout.split('Project is published and running at')[1].trim()
       })
       .end(done)
@@ -34,13 +33,12 @@ describe('plus', function () {
 
     nixt(opts)
       .run(surge + 'plus -e localhost:5001')
-      .on(/.*domain:.*/).respond(subdomain + '.surge.sh\n')
+      .on(/.*domain:.*/).respond(subdomain + '\n')
       .on(/.*Would you like to charge.*/).respond('yes\n')
       // .on(/.*card number:.*/).respond('4242-4242-4242-4242\n')
       // .on(/.*exp \(mo\/yr\):.*/).respond('01/19\n')
       // .on(/.*cvc:.*/).respond('012')
       .expect(function (result) {
-        console.log(result)
         should(result.stdout).match(/plan: Plus/)
         should(result.stdout).match(/You are now upgraded to Plus!/)
         should(result.stdout).not.match(/plan: Free/)
@@ -50,60 +48,50 @@ describe('plus', function () {
       .end(done)
   })
 
-  // it('`surge ssl`', function (done) {
-  //   this.timeout(10000)
-  //
-  //   nixt(opts)
-  //     .run(surge + 'ssl -e localhost:5001')
-  //     .on(/.*domain:.*/).respond(subdomain + '.surge.sh\n')
-  //     .on(/.*pem file:.*/).respond('./test/fixtures/ssl/test.pem')
-  //     .on(/.*Would you like to charge.*/).respond('yes\n')
-  //     .expect(function (result) {
-  //       console.log(result)
-  //       should(result.stdout).not.match(/No such file or directory/)
-  //       should(result.stdout).not.match(/invalid/)
-  //       should(result.stdout).not.match(/Please try again\./)
-  //       should(result.stdout).match(/Success/)
-  //       should(result.stdout).match(/applied/)
-  //     })
-  //     .end(done)
-  // })
+  it('`surge ssl`', function (done) {
+    this.timeout(10000)
 
+    nixt(opts)
+      .run(surge + '-e localhost:5001 ssl ' + subdomain)
+      .on(/.*pem file:.*/).respond('./test/fixtures/ssl/test.pem\n')
+      .on(/.*Would you like to charge.*/).respond('yes\n')
+      .expect(function (result) {
+        should(result.stdout).not.match(/No such file or directory/)
+        should(result.stdout).not.match(/invalid/)
+        should(result.stdout).not.match(/Please try again\./)
+        should(result.stdout).match(/Success/)
+        should(result.stdout).match(/applied/)
+      })
+      .end(done)
+  })
+
+  // TODO This doesn’t respond with the existing result + `\n` right now
   // it('`surge ssl` with `CNAME` file', function (done) {
-  //   this.timeout(10000)
-  //
   //   nixt(opts)
-  //     .run(surge + 'ssl ./test/fixtures/cli-test-4.surge.sh/')
-  //     .on(/.*domain:.*/).respond('cli-test.surge.sh\n')
-  //     .on(/.*pem file:.*/).respond('./test/fixtures/ssl/test.pem')
-  //     .on(/.*Would you like to charge Visa ending in 4242\?.*/).respond('\n')
-  //     // .on(/.*card number:.*/).respond('4242-4242-4242-4242\n')
-  //     // .on(/.*exp \(mo\/yr\):.*/).respond('01/19\n')
-  //     // .on(/.*cvc:.*/).respond('012')
-  //
+  //     .run(surge + '-e localhost:5001 ssl --project ./test/fixtures/cli-test-6.surge.sh')
+  //     .on(/.*domain:.*/).respond('\n')
   //     .expect(function (result) {
-  //       should(result.stdout).not.match(/No such file or directory/)
-  //       should(result.stdout).not.match(/invalid/)
-  //       should(result.stdout).not.match(/Please try again\./)
-  //       should(result.stdout).match(/Success/)
-  //       should(result.stdout).match(/applied/)
   //     })
   //     .end(done)
   // })
 
   // it('`surge ssl --domain` with no arg', function (done) {
+  //   this.timeout(5000)
+  //
   //   nixt(opts)
-  //     .run(surge + 'ssl --domain')
+  //     .run(surge + '--endpoint localhost:5001 ssl --domain\n')
   //     .expect(function (result) {
-  //       should(result.stdout).not.match(/throw/)
-  //       should(result.stdout).not.match(/AssertionError/)
+  //       should(result.stderr).equal('undefined')
+  //       should(result.stderr).not.match(/throw/)
+  //       should(result.stderr).not.match(/AssertionError/)
   //     })
+  //     .end(done)
   // })
 
-  after(function (done) {
+  afterEach(function (done) {
     nixt(opts)
       .run(surge + 'teardown -e localhost:5001')
-      .on(/.*domain:.*/).respond(subdomain + '.surge.sh')
+      .on(/.*domain:.*/).respond(subdomain + '\n')
       .expect(function (result) {
         should(result.stdout).match(/Success/)
         should(result.stdout).match(/removed/)
