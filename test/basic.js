@@ -120,6 +120,7 @@ describe('surge', function () {
   })
 
   describe('list', function () {
+    this.timeout(5000)
 
     it('`surge list`', function (done) {
       nixt({ colors: false, newlines: true })

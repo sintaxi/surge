@@ -23,7 +23,6 @@ describe('teardown', function () {
       .on(/.*project path:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
       .on(/.*domain:.*/).respond('\n')
       .expect(function (result) {
-        console.log(result.stdout)
         subdomain = result.stdout.split('Project is published and running at')[1].trim()
       })
       .end(done)
