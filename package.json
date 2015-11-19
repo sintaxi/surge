@@ -22,9 +22,11 @@
     "minimist": "1.1.1"
   },
   "devDependencies": {
+    "commander": "2.9.0",
     "mocha": "*",
     "nixt": "0.4.1",
-    "should": "7.1.0"
+    "should": "7.1.0",
+    "yargs": "3.30.0"
   },
   "license": "ISC",
   "main": "./lib/surge.js",
