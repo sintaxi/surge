@@ -30,7 +30,8 @@
   "main": "./lib/surge.js",
   "ignore": ["test"],
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test:local": "ENDPOINT='localhost:5001' ./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",

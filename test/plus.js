@@ -2,9 +2,9 @@ var nixt = require('nixt')
 var should = require('should')
 var pkg = require('../package.json')
 
-var surge = 'node ' + pkg.bin + ' '
+var endpoint = ' -e ' + process.env.ENDPOINT + ' ' || ''
+var surge = 'node ' + pkg.bin + endpoint
 var ci = process.env.CI || false
-var endpoint = ci ? ' ' : ' -e localhost:5001 '
 var opts = {
   colors: false,
   newlines: true
@@ -19,8 +19,8 @@ describe('plus', function () {
     this.timeout(25000)
 
     nixt(opts)
-      .exec(surge + 'logout' + endpoint) // Logout before the test starts
-      .run(surge + endpoint)
+      .exec(surge + 'logout') // Logout before the test starts
+      .run(surge)
       .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
       .on(/.*password:.*/).respond('12345\n')
       .on(/.*project path:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
@@ -35,8 +35,7 @@ describe('plus', function () {
     this.timeout(50000)
 
     nixt(opts)
-      .run(surge + endpoint + 'plus')
-      .on(/.*domain:.*/).respond(subdomain + '\n')
+      .run(surge + 'plus ' + subdomain)
       .on(/.*Would you like to charge.*/).respond('yes\n')
       // .on(/.*card number:.*/).respond('4242-4242-4242-4242\n')
       // .on(/.*exp \(mo\/yr\):.*/).respond('01/19\n')
@@ -55,7 +54,7 @@ describe('plus', function () {
     this.timeout(50000)
 
     nixt(opts)
-      .run(surge + endpoint + 'ssl ' + subdomain)
+      .run(surge + 'ssl ' + subdomain)
       .on(/.*pem file:.*/).respond('./test/fixtures/ssl/test.pem\n')
       .on(/.*Would you like to charge.*/).respond('yes\n')
       .expect(function (result) {
@@ -95,7 +94,7 @@ describe('plus', function () {
     this.timeout(25000)
     
     nixt(opts)
-      .run(surge + 'teardown' + endpoint)
+      .run(surge + 'teardown')
       .on(/.*domain:.*/).respond(subdomain + '\n')
       .expect(function (result) {
         should(result.stdout).match(/Success/)
