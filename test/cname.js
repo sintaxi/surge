@@ -11,7 +11,7 @@ var opts = {
 describe('CNAME', function (done) {
 
   it('`surge` with CNAME file', function (done) {
-    this.timeout(5000)
+    this.timeout(25000)
     nixt(opts)
       .exec(surge + 'logout')
       .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
@@ -24,7 +24,7 @@ describe('CNAME', function (done) {
       .end(done)
   })
   it('`surge` with CNAME file and protocol', function (done) {
-    this.timeout(5000)
+    this.timeout(25000)
     nixt(opts)
       .run(surge + './test/fixtures/cli-test-3.surge.sh')
       .expect(function (result) {
@@ -34,7 +34,7 @@ describe('CNAME', function (done) {
       .end(done)
   })
   it('`surge` with CNAME file and subdomain', function (done) {
-    this.timeout(5000)
+    this.timeout(25000)
     nixt(opts)
       .run(surge + './test/fixtures/cli-test-4.surge.sh')
       .expect(function (result) {
@@ -43,8 +43,8 @@ describe('CNAME', function (done) {
       })
       .end(done)
   })
-  it('Should let `surge --domain` ovverrid CNAME', function (done) {
-    this.timeout(5000)
+  it('Should let `surge --domain` override CNAME', function (done) {
+    this.timeout(25000)
 
     var subdomain = ''
 

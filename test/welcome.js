@@ -17,7 +17,7 @@ describe('welcome message', function (done) {
   })
 
   it('Run `surge`', function (done) {
-    this.timeout(5000)
+    this.timeout(15000)
     nixt(opts)
       .run(surge)
       .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
@@ -30,7 +30,7 @@ describe('welcome message', function (done) {
   })
 
   it('Run `surge login` when already logged in', function (done) {
-    this.timeout(5000)
+    this.timeout(15000)
     nixt(opts)
       .run(surge + 'login')
       .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
@@ -43,7 +43,7 @@ describe('welcome message', function (done) {
   })
 
   it('Run `surge login`', function (done) {
-    this.timeout(5000)
+    this.timeout(15000)
     nixt(opts)
       .exec(surge + 'logout')
       .run(surge + 'login')

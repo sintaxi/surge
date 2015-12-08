@@ -16,7 +16,7 @@ describe('plus', function () {
   var subdomain = ''
 
   beforeEach(function (done) {
-    this.timeout(5000)
+    this.timeout(25000)
 
     nixt(opts)
       .exec(surge + 'logout' + endpoint) // Logout before the test starts
@@ -32,10 +32,10 @@ describe('plus', function () {
   })
 
   it('`surge plus`', function (done) {
-    this.timeout(10000)
+    this.timeout(50000)
 
     nixt(opts)
-      .run(surge + 'plus' + endpoint)
+      .run(surge + endpoint + 'plus')
       .on(/.*domain:.*/).respond(subdomain + '\n')
       .on(/.*Would you like to charge.*/).respond('yes\n')
       // .on(/.*card number:.*/).respond('4242-4242-4242-4242\n')
@@ -52,10 +52,10 @@ describe('plus', function () {
   })
 
   it('`surge ssl`', function (done) {
-    this.timeout(10000)
+    this.timeout(50000)
 
     nixt(opts)
-      .run(surge + endpoint + ' ssl ' + subdomain)
+      .run(surge + endpoint + 'ssl ' + subdomain)
       .on(/.*pem file:.*/).respond('./test/fixtures/ssl/test.pem\n')
       .on(/.*Would you like to charge.*/).respond('yes\n')
       .expect(function (result) {
@@ -92,6 +92,8 @@ describe('plus', function () {
   // })
 
   afterEach(function (done) {
+    this.timeout(25000)
+    
     nixt(opts)
       .run(surge + 'teardown' + endpoint)
       .on(/.*domain:.*/).respond(subdomain + '\n')
