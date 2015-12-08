@@ -4,7 +4,7 @@ var pkg = require('../package.json')
 
 var surge = 'node ' + pkg.bin + ' '
 var ci = process.env.CI || false
-var endpoint = ci ? '' : ' -e localhost:5001'
+var endpoint = ci ? ' ' : ' -e localhost:5001 '
 var opts = {
   colors: false,
   newlines: true
