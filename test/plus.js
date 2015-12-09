@@ -2,8 +2,8 @@ var nixt = require('nixt')
 var should = require('should')
 var pkg = require('../package.json')
 
-var endpoint = ' -e ' + process.env.ENDPOINT + ' ' || ''
-var surge = 'node ' + pkg.bin + endpoint
+var endpoint = typeof process.env.ENDPOINT !== 'undefined' ? ' -e ' + process.env.ENDPOINT + ' ' : false
+var surge = 'node ' + pkg.bin + (endpoint ? endpoint : ' ')
 var ci = process.env.CI || false
 var opts = {
   colors: false,
@@ -11,7 +11,7 @@ var opts = {
 }
 
 describe('plus', function () {
-  if (!ci) {
+  if (!ci && endpoint) {
 
   var subdomain = ''
 
@@ -92,7 +92,7 @@ describe('plus', function () {
 
   afterEach(function (done) {
     this.timeout(25000)
-    
+
     nixt(opts)
       .run(surge + 'teardown')
       .on(/.*domain:.*/).respond(subdomain + '\n')
@@ -104,6 +104,10 @@ describe('plus', function () {
   })
 
   } else {
-    console.warn('Plus tests aren’t yet configured to run on CI.')
+    if (ci) {
+      console.warn('Plus tests aren’t yet configured to run on CI.')
+    } else {
+      console.warn('Plus tests require a local endpoint specified.')
+    }
   }
 })
