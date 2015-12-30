@@ -17,7 +17,7 @@ It’s easier to show than tell so let’s get to it! The following command will
 Run `surge --help` to see the following overview of the `surge` command...
 
 ```
-  Surge - single-command web publishing. (v0.7.2)
+  Surge – Single-command web publishing. (v0.17.4)
 
   Usage:
     surge [options]
@@ -25,7 +25,6 @@ Run `surge --help` to see the following overview of the `surge` command...
   Options:
     -p, --project       path to projects asset directory (./)
     -d, --domain        domain of your project (<random>.surge.sh)
-    -e, --endpoint      domain of API server (surge.sh)
     -a, --add           adds user to list of collaborators (email address)
     -r, --remove        removes user from list of collaborators (email address)
     -V, --version       show the version number
@@ -39,6 +38,12 @@ Run `surge --help` to see the following overview of the `surge` command...
     surge logout        expire local token
     surge login         only performs authentication step
     surge list          list all domains you have access to
+    surge teardown      tear down a published project
+
+  Guides:
+    Getting started     surge.sh/help/getting-started-with-surge
+    Custom domains      surge.sh/help/adding-a-custom-domain
+    Additional help     surge.sh/help
 
   When in doubt, run surge from within you project directory.
 
