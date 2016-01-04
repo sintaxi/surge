@@ -127,6 +127,15 @@ describe('publish', function (done) {
       })
       .end(done)
   })
+  it('Should get a warning about publishing to a `surge.example.com` subdomain', function (done) {
+    this.timeout(25000)
+    nixt(opts)
+      .run(surge + './test/fixtures/cli-test.surge.sh surge.example.com')
+      .expect(function (result) {
+        should(result.stdout).match(/Aborted/)
+      })
+      .end(done)
+  })
 
   after(function (done) {
     this.timeout(25000)
