@@ -1,6 +1,6 @@
 {
   "name": "surge",
-  "version": "0.17.4",
+  "version": "0.17.5",
   "description": "CDN for front-end developers",
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./lib/cli.js",
@@ -32,7 +32,7 @@
   "main": "./lib/surge.js",
   "ignore": ["test"],
   "scripts": {
-    "test": "mocha",
+    "test": "mocha -t 5000",
     "test:local": "ENDPOINT='localhost:5001' ./node_modules/.bin/mocha"
   },
   "repository": {
