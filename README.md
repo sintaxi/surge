@@ -17,7 +17,7 @@ It’s easier to show than tell so let’s get to it! The following command will
 Run `surge --help` to see the following overview of the `surge` command...
 
 ```
-  Surge – Single-command web publishing. (v0.17.4)
+  Surge – Single-command web publishing. (v0.17.6)
 
   Usage:
     surge [options]
