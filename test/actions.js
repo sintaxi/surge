@@ -1,10 +1,11 @@
 var should = require('should')
-var minimist = require('minimist')(process.argv.slice(2))
-var yargs = require('yargs')
 var commander = require('commander')
+var nixt = require('nixt')
 var Surge = require('../')
 var surge = new Surge
 var pkg = require('../package.json')
+var minimist = 'node ./test/fixtures/bin/minimist.js'
+var yargs = 'node ./test/fixtures/bin/yargs.js'
 var hooks = {}
 
 describe('actions', function (done) {
@@ -26,18 +27,29 @@ describe('actions', function (done) {
     })
 
     it('minimist', function (done) {
-      var program = minimist
-      should(program._.length).equal(1)
-      done()
+      nixt({ colors: false })
+        .run(minimist + ' login')
+        .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
+        .on(/.*password:.*/).respond('12345\n')
+        .expect(function (result) {
+          should(result.stdout).match(/Logged in as kenneth/)
+          should(result.stdout).match(/surge.sh/)
+        })
+        .exec(minimist + ' logout')
+        .end(done)
     })
 
     it('yargs', function (done) {
-      var program = yargs
-      program
-        .command('teardown', 'Login to Surge.', surge.login(hooks))
-        .argv
-      should(program.argv._.length).equal(1)
-      done()
+      nixt({ colors: false })
+        .run(yargs + ' login')
+        .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
+        .on(/.*password:.*/).respond('12345\n')
+        .expect(function (result) {
+          should(result.stdout).match(/Logged in as kenneth/)
+          should(result.stdout).match(/surge.sh/)
+        })
+        .exec(yargs + ' logout')
+        .end(done)
     })
   })
 
