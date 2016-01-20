@@ -5,7 +5,11 @@ var Surge = require('../../../')
 var surge = new Surge
 
 program
-  .command('whoami')
-  .action(surge.whoami())
+  .command('login')
+  .action(surge.login())
+
+program
+  .command('logout')
+  .action(surge.logout())
 
 program.parse(process.argv)

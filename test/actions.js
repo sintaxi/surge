@@ -41,6 +41,21 @@ describe('actions', function (done) {
         .end(done)
     })
 
+    it('commander without hooks object', function (done) {
+      var commander = 'node ./test/fixtures/bin/commander-no-hooks.js'
+      nixt({ colors: false })
+        .exec(commander + ' logout')
+        .run(commander + ' login')
+        .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
+        .on(/.*password:.*/).respond('12345\n')
+        .expect(function (result) {
+          should(result.stdout).match(/Logged in as kenneth/)
+          should(result.stdout).match(/surge.sh/)
+        })
+        .exec(commander + ' logout')
+        .end(done)
+    })
+
     it('minimist', function (done) {
       nixt({ colors: false })
         .run(minimist + ' login')
