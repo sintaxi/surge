@@ -26,6 +26,21 @@ describe('actions', function (done) {
       done()
     })
 
+    it('commander without args', function (done) {
+      var commander = 'node ./test/fixtures/bin/commander-no-args.js'
+      nixt({ colors: false })
+        .run(commander + ' up')
+        .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
+        .on(/.*password:.*/).respond('12345\n')
+        .on(/.*domain:.*/).respond('\n')
+        .expect(function (result) {
+          console.log(result.stdout)
+          should(result.stdout).match(/publish/)
+        })
+        .exec(commander + ' logout')
+        .end(done)
+    })
+
     it('minimist', function (done) {
       nixt({ colors: false })
         .run(minimist + ' login')
