@@ -1,6 +1,6 @@
 {
   "name": "surge",
-  "version": "0.17.7",
+  "version": "0.18.0",
   "description": "CDN for front-end developers",
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./lib/cli.js",
