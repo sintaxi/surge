@@ -7,19 +7,20 @@
   "dependencies": {
     "du": "0.1.0",
     "fstream-ignore": "1.0.2",
+    "inquirer": "^3.0.6",
     "is-domain": "0.0.1",
+    "minimist": "1.1.1",
     "moniker": "0.1.2",
     "netrc": "0.1.4",
-    "prompt": "~0.2.14",
     "progress": "1.1.8",
+    "prompt": "~0.2.14",
+    "read": "1.0.5",
     "request": "2.40.0",
     "split": "0.3.1",
     "surge-ignore": "0.2.0",
     "tar": "1.0.0",
     "tar.gz": "0.1.1",
-    "url-parse-as-address": "1.0.0",
-    "read": "1.0.5",
-    "minimist": "1.1.1"
+    "url-parse-as-address": "1.0.0"
   },
   "devDependencies": {
     "commander": "2.9.0",
