@@ -15,7 +15,7 @@ var testid = "cli-test-" + testts
 var user = "brock+test@chloi.io"
 var pass = "12345"
 
-describe("surge " + testid, function () {
+describe("surge " + testid + " using " + user, function () {
 
   describe ("prepare", function(){
     it('logout', function (done) {
