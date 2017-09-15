@@ -31,7 +31,7 @@ describe('actions', function (done) {
       nixt({ colors: false })
         .exec(commander + ' logout')
         .run(commander + ' up')
-        .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
+        .on(/.*email:.*/).respond('brock+test@chloi.io\n')
         .on(/.*password:.*/).respond('12345\n')
         .on(/.*domain:.*/).respond('\n')
         .expect(function (result) {
@@ -46,10 +46,10 @@ describe('actions', function (done) {
       nixt({ colors: false })
         .exec(commander + ' logout')
         .run(commander + ' login')
-        .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
+        .on(/.*email:.*/).respond('brock+test@chloi.io\n')
         .on(/.*password:.*/).respond('12345\n')
         .expect(function (result) {
-          should(result.stdout).match(/Logged in as kenneth/)
+          should(result.stdout).match(/Logged in as brock/)
           should(result.stdout).match(/surge.sh/)
         })
         .exec(commander + ' logout')
@@ -59,10 +59,10 @@ describe('actions', function (done) {
     it('minimist', function (done) {
       nixt({ colors: false })
         .run(minimist + ' login')
-        .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
+        .on(/.*email:.*/).respond('brock+test@chloi.io\n')
         .on(/.*password:.*/).respond('12345\n')
         .expect(function (result) {
-          should(result.stdout).match(/Logged in as kenneth/)
+          should(result.stdout).match(/Logged in as brock/)
           should(result.stdout).match(/surge.sh/)
         })
         .exec(minimist + ' logout')
@@ -72,10 +72,10 @@ describe('actions', function (done) {
     it('yargs', function (done) {
       nixt({ colors: false })
         .run(yargs + ' login')
-        .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
+        .on(/.*email:.*/).respond('brock+test@chloi.io\n')
         .on(/.*password:.*/).respond('12345\n')
         .expect(function (result) {
-          should(result.stdout).match(/Logged in as kenneth/)
+          should(result.stdout).match(/Logged in as brock/)
           should(result.stdout).match(/surge.sh/)
         })
         .exec(yargs + ' logout')

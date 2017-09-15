@@ -4,47 +4,178 @@ var pkg = require('../package.json')
 
 var endpoint = typeof process.env.ENDPOINT !== 'undefined' ? ' -e ' + process.env.ENDPOINT + ' ' : ' '
 var surge = 'node ' + pkg.bin + endpoint
+
 var opts = {
   colors: false,
   newlines: false
 }
 
-describe('surge', function () {
+var testts = (new Date()).getTime()
+var testid = "cli-test-" + testts
+var user = "brock+test@chloi.io"
+var pass = "12345"
 
-  it('should be cool', function (done) {
-    done()
-  })
+describe("surge " + testid, function () {
 
-  it('should provide an error message when the command isn’t valid', function (done) {
-    nixt({ colors: false })
-      .run(surge + '--deploy')
+  describe ("prepare", function(){
+    it('logout', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'logout') // Logout again afterwards
       .expect(function (result) {
-        // Something like…
-        // `--deploy` is not a surge command
-        should(result.stdout).match(/--deploy/)
-        should(result.stdout).match(/not/)
-      })
-      .end(done)
+        should(result.stdout).match(/Token removed from /)
+      }).end(done)
+    })
   })
 
-  describe('version', function (done) {
+  describe("helpers", function(){
 
-    it('`surge --version`', function (done) {
-      nixt(opts)
-        .run(surge + '--version')
-        .expect(function(result) {
-          should(result.stdout).be.equal(pkg.version)
-        })
-        .end(done)
+    it('should catch invalid arguments', function (done) {
+      nixt({ colors: false })
+      .run(surge + '--foo')
+      .expect(function (result) {
+        should(result.stdout).match(/--foo/)
+        should(result.stdout).match(/not/)
+      }).end(done)
     })
 
-    it('`surge -V`', function (done) {
+    it('should return version when --version is used', function (done) {
       nixt(opts)
-        .run(surge + '-V')
-        .expect(function(result) {
-          should(result.stdout).be.equal(pkg.version)
-        })
-        .end(done)
+      .run(surge + '--version')
+      .expect(function(result) {
+        should(result.stdout).be.equal(pkg.version)
+      }).end(done)
+    })
+
+    it('should return version when -V is used', function (done) {
+      nixt(opts)
+      .run(surge + '-V')
+      .expect(function(result) {
+        should(result.stdout).be.equal(pkg.version)
+      }).end(done)
+    })
+
+  })
+
+  describe("wizards", function(){
+    var subdomain = testid + "-one"
+    var domain = subdomain + ".surge.sh"
+    var resultedDomain
+
+    it('should create project', function (done) {
+      this.timeout(9999)
+      nixt(opts)
+      .exec(surge + 'logout') // Logout before the test starts
+      .run(surge)
+      .on(/.*email:.*/).respond(user + '\n')
+      .on(/.*password:.*/).respond(pass + '\n')
+      .on(/.*project path:.*/).respond('./test/fixtures/projects/hello-world\n')
+      .on(/.*domain:.*/).respond(domain + "\n")
+      .expect(function (result) {
+        should(result.stdout).not.match(pass)
+        should(result.stdout).match(/1 file/)
+        should(result.stdout).match(new RegExp("Success! Project is published and running at " + domain))
+        resultedDomain = result.stdout.split('Project is published and running at')[1].trim()
+        resultedDomain.should.equal(domain)
+      }).end(done)
+    })
+
+    it('should have project in list', function (done) {
+      this.timeout(9999)
+      nixt(opts)
+      .exec(surge + 'logout') // Logout before the test starts
+      .run(surge + 'list')
+      .on(/.*email:.*/).respond(user + '\n')
+      .on(/.*password:.*/).respond(pass + '\n')
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp(resultedDomain))
+      }).end(done)
+    })
+
+    it('should update project', function (done) {
+      this.timeout(9999)
+      nixt(opts)
+      .exec(surge + 'logout') // Logout before the test starts
+      .run(surge)
+      .on(/.*email:.*/).respond(user + '\n')
+      .on(/.*password:.*/).respond(pass + '\n')
+      .on(/.*project path:.*/).respond('./test/fixtures/projects/hello-world\n')
+      .on(/.*domain:.*/).respond(domain + "\n")
+      .expect(function (result) {
+        should(result.stdout).not.match(pass)
+        should(result.stdout).match(/1 file/)
+        should(result.stdout).match(new RegExp("Success! Project is published and running at " + domain))
+        resultedDomain = result.stdout.split('Project is published and running at')[1].trim()
+        resultedDomain.should.equal(domain)
+      }).end(done)
+    })
+
+    it('should teardown project', function (done) {
+      this.timeout(9999)
+      nixt(opts)
+      .exec(surge + 'logout') // Logout before the test starts
+      .run(surge + 'teardown')
+      .on(/.*email:.*/).respond(user + '\n')
+      .on(/.*password:.*/).respond(pass + '\n')
+      .on(/.*domain:.*/).respond(domain + '\n')
+      .expect(function (result) {
+        should(result.stdout).match(/Success/)
+        should(result.stdout).match(/has been removed/)
+        should(result.stdout).match(new RegExp(subdomain))
+        should(result.stdout).not.match(subdomain)
+      }).end(done)
+    })
+
+    it('should no longer have project in list', function (done) {
+      this.timeout(9999)
+      nixt(opts)
+      .exec(surge + 'logout') // Logout before the test starts
+      .run(surge + 'list')
+      .on(/.*email:.*/).respond(user + '\n')
+      .on(/.*password:.*/).respond(pass + '\n')
+      .expect(function (result) {
+        should(result.stdout).not.match(new RegExp(resultedDomain))
+      }).end(done)
+    })
+
+  })
+
+  describe('auth', function (done) {
+    this.timeout(9999)
+
+    it('should be able to login', function (done) {
+      nixt({ colors: false })
+      .exec(surge + 'logout') // Logout before the test starts
+      .run(surge + 'login')
+      .on(/.*email:.*/).respond(user + '\n')
+      .on(/.*password:.*/).respond(pass + '\n')
+      .expect(function (result) {
+        should(result.stdout).match(/Logged in as brock/)
+        // should(result.code).equal(1)
+      }).end(done)
+    })
+
+    it('should return current user when checking whoami', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'whoami')
+      .expect(function (result) {
+        should(result.stdout).match(/Logged in as brock/)
+      }).end(done)
+    })
+
+    it('should logout', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'logout') // Logout again afterwards
+      .expect(function (result) {
+        should(result.stdout).match(/Token removed from /)
+      }).end(done)
+    })
+
+    it('should not return user when not authenticated', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'whoami')
+      .expect(function (result) {
+        should(result.stdout).match(/Not currently authenticated/)
+      }).end(done)
     })
 
   })
@@ -85,71 +216,87 @@ describe('surge', function () {
   //   })
   // })
 
-  describe('login', function (done) {
-    this.timeout(2500)
-    it('`surge login`', function (done) {
+  describe("session", function(){
+    var subdomain = testid + "-two"
+    var domain = subdomain + ".surge.sh"
+    var resultedDomain
+
+    it('login', function (done) {
       nixt({ colors: false })
-        .exec(surge + 'logout') // Logout before the test starts
-        .run(surge + 'login')
-        .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
-        .on(/.*password:.*/).respond('12345\n')
-        .expect(function (result) {
-          should(result.stdout).match(/Logged in as kenneth/)
-
-          // Possibly not returning the right codes right now?
-          // should(result.code).equal(1)
-        })
-        .end(done)
-    })
-    it('`surge whoami`', function (done) {
-      nixt({ colors: false })
-        .run(surge + 'whoami')
-        .expect(function (result) {
-          should(result.stdout).match(/Logged in as kenneth/)
-        })
-        .end(done)
+      .exec(surge + 'logout') // Logout before the test starts
+      .run(surge + 'login')
+      .on(/.*email:.*/).respond(user + '\n')
+      .on(/.*password:.*/).respond(pass + '\n')
+      .expect(function (result) {
+        should(result.stdout).match(/Logged in as brock/)
+        // should(result.code).equal(1)
+      }).end(done)
     })
 
-    it('`surge logout`', function (done) {
-      nixt({ colors: false })
-        .run(surge + 'logout') // Logout again afterwards
-        .expect(function (result) {
-          should(result.stdout).match(/Token removed from /)
-        })
-        .end(done)
+    it('should create second project using session', function (done) {
+      this.timeout(9999)
+      nixt(opts)
+      .run(surge)
+      .on(/.*project path:.*/).respond('./test/fixtures/projects/hello-world\n')
+      .on(/.*domain:.*/).respond(domain + "\n")
+      .expect(function (result) {
+        should(result.stdout).not.match(pass)
+        should(result.stdout).match(/1 file/)
+        should(result.stdout).match(new RegExp("Success! Project is published and running at " + domain))
+        resultedDomain = result.stdout.split('Project is published and running at')[1].trim()
+        resultedDomain.should.equal(domain)
+      }).end(done)
     })
-  })
 
-  describe('list', function () {
-    this.timeout(5000)
-
-    it('`surge list`', function (done) {
-      nixt({ colors: false, newlines: true })
-        .exec(surge + 'logout') // Logout before the test starts
-        .run(surge + 'list')
-        .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
-        .on(/.*password:.*/).respond('12345\n')
-        .expect(function (result) {
-          should(result.stdout).match(/cli-test-2\.surge\.sh/)
-          should(result.stdout).match(/cli-test-3\.surge\.sh/)
-          should(result.stdout).not.match(/www\.cli-test-3\.surge\.sh/)
-          should(result.stdout).match(/www\.cli-test-4\.surge\.sh/)
-          should(result.stdout).not.match(/cli-test-0\.surge\.sh/)
-        })
-        .end(done)
+    it('should have project in list', function (done) {
+      this.timeout(9999)
+      nixt(opts)
+      .run(surge + 'list')
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp(resultedDomain))
+      }).end(done)
     })
+
+    it('should update project', function (done) {
+      this.timeout(9999)
+      nixt(opts)
+      .run(surge)
+      .on(/.*project path:.*/).respond('./test/fixtures/projects/hello-world\n')
+      .on(/.*domain:.*/).respond(domain + "\n")
+      .expect(function (result) {
+        should(result.stdout).not.match(pass)
+        should(result.stdout).match(/1 file/)
+        should(result.stdout).match(new RegExp("Success! Project is published and running at " + domain))
+        resultedDomain = result.stdout.split('Project is published and running at')[1].trim()
+        resultedDomain.should.equal(domain)
+      }).end(done)
+    })
+
+    it('should teardown project', function (done) {
+      this.timeout(9999)
+      nixt(opts)
+      .run(surge + 'teardown')
+      .on(/.*domain:.*/).respond(domain + '\n')
+      .expect(function (result) {
+        should(result.stdout).match(/Success/)
+        should(result.stdout).match(/has been removed/)
+        should(result.stdout).match(new RegExp(subdomain))
+        should(result.stdout).not.match(subdomain)
+      }).end(done)
+    })
+
+    it('should no longer have project in list', function (done) {
+      this.timeout(9999)
+      nixt(opts)
+      .run(surge + 'list')
+      .expect(function (result) {
+        should(result.stdout).not.match(new RegExp(resultedDomain))
+      }).end(done)
+    })
+
   })
 
   describe('token', function () {
-
-    before(function (done) {
-      nixt(opts)
-        .exec(surge + 'logout') // Logout before the test starts
-        .run(surge + 'login')
-        .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
-        .on(/.*password:.*/).respond('12345\n')
-        .end(done)
-    })
 
     it('`surge token`', function (done) {
       this.timeout(5000)
@@ -157,7 +304,7 @@ describe('surge', function () {
       nixt(opts)
         .run(surge + 'token')
         .expect(function (result) {
-          should(result.stdout).match(/.*email: kenneth\+test@chloi\.io/)
+          should(result.stdout).match(/.*email: brock\+test@chloi\.io/)
           should(result.stdout).match(/.*token:*./)
         })
         .end(done)

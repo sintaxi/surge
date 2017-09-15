@@ -3,27 +3,37 @@ var should = require('should')
 var pkg = require('../package.json')
 
 var endpoint = typeof process.env.ENDPOINT !== 'undefined' ? ' -e ' + process.env.ENDPOINT + ' ' : ' '
-var surge = 'node ' + pkg.bin + endpoint
+
+
+var user = "brock+test@chloi.io"
+var pass = "12345"
+var cmd  = 'node ' + pkg.bin + endpoint
+
+
 var opts = {
   colors: false,
   newlines: false
 }
 
-describe('CNAME', function (done) {
+describe('crud', function (done) {
 
-  it('`surge` with CNAME file', function (done) {
+  describe("publish", function(done){
+
+  })
+
+  it('should access cname file when no arg present', function (done) {
     this.timeout(25000)
     nixt(opts)
-      .exec(surge + 'logout')
-      .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
-      .on(/.*password:.*/).respond('12345\n')
-      .run(surge + './test/fixtures/cli-test-2.surge.sh')
-      .expect(function (result) {
-        should(result.stdout).match(/2 file/)
-        should(result.stdout).match(/Success! Project is published and running at cli-test-2/)
-      })
-      .end(done)
+    .exec(surge + 'logout')
+    .on(/.*email:.*/).respond(user + "\n")
+    .on(/.*password:.*/).respond(pass "\n")
+    .run(surge + './test/fixtures/projects/hello-cname')
+    .expect(function (result) {
+      should(result.stdout).match(/2 file/)
+      should(result.stdout).match(/Success! Project is published and running at cli-test-2/)
+    }).end(done)
   })
+
   it('`surge` with CNAME file and protocol', function (done) {
     this.timeout(25000)
     nixt(opts)

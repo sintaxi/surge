@@ -23,7 +23,7 @@ describe('publish', function (done) {
     this.timeout(25000)
     nixt(opts)
       .run(surge)
-      .on(/.*email:.*/).respond('kenneth+test@chloi.io\n')
+      .on(/.*email:.*/).respond('brock+test@chloi.io\n')
       .on(/.*password:.*/).respond('12345\n')
       .on(/.*project path:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
       .on(/.*domain:.*/).respond('cli-test.surge.sh\n')
