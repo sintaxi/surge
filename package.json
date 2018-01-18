@@ -5,9 +5,11 @@
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./lib/cli.js",
   "dependencies": {
+    "cli-table": "^0.3.1",
+    "cli-table2": "^0.2.0",
     "du": "0.1.0",
     "fstream-ignore": "1.0.2",
-    "inquirer": "^3.0.6",
+    "inquirer": "",
     "is-domain": "0.0.1",
     "minimist": "1.1.1",
     "moniker": "0.1.2",
