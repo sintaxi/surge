@@ -30,7 +30,7 @@ describe('actions', function (done) {
       var commander = 'node ./test/fixtures/bin/commander-no-args.js'
       nixt({ colors: false })
         .exec(commander + ' logout')
-        .run(commander + ' up')
+        .run(commander + ' publish')
         .on(/.*email:.*/).respond('brock+test@chloi.io\n')
         .on(/.*password:.*/).respond('12345\n')
         .on(/.*domain:.*/).respond('\n')
@@ -49,8 +49,7 @@ describe('actions', function (done) {
         .on(/.*email:.*/).respond('brock+test@chloi.io\n')
         .on(/.*password:.*/).respond('12345\n')
         .expect(function (result) {
-          should(result.stdout).match(/Logged in as brock/)
-          should(result.stdout).match(/surge.sh/)
+          should(result.stdout).match(/Success - Logged in as brock+test@chloi.io/)
         })
         .exec(commander + ' logout')
         .end(done)
@@ -62,8 +61,7 @@ describe('actions', function (done) {
         .on(/.*email:.*/).respond('brock+test@chloi.io\n')
         .on(/.*password:.*/).respond('12345\n')
         .expect(function (result) {
-          should(result.stdout).match(/Logged in as brock/)
-          should(result.stdout).match(/surge.sh/)
+          should(result.stdout).match(/Success - Logged in as brock+test@chloi.io/)
         })
         .exec(minimist + ' logout')
         .end(done)
@@ -75,7 +73,7 @@ describe('actions', function (done) {
         .on(/.*email:.*/).respond('brock+test@chloi.io\n')
         .on(/.*password:.*/).respond('12345\n')
         .expect(function (result) {
-          should(result.stdout).match(/Logged in as brock/)
+          should(result.stdout).match(/Success - Logged in as brock+test@chloi.io/)
           should(result.stdout).match(/surge.sh/)
         })
         .exec(yargs + ' logout')

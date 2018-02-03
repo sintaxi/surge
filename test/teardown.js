@@ -14,14 +14,14 @@ describe('teardown', function () {
   var subdomain = ''
 
   before(function (done) {
-    this.timeout(25000)
+    this.timeout(5000)
 
     nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
       .run(surge)
       .on(/.*email:.*/).respond('brock+test@chloi.io\n')
       .on(/.*password:.*/).respond('12345\n')
-      .on(/.*project path:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
+      .on(/.*project:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
       .on(/.*domain:.*/).respond('\n')
       .expect(function (result) {
         subdomain = result.stdout.split('Project is published and running at')[1].trim()
@@ -30,7 +30,7 @@ describe('teardown', function () {
   })
 
   it('`surge teardown`', function (done) {
-    this.timeout(25000)
+    this.timeout(5000)
 
     nixt(opts)
       .run(surge + 'teardown')

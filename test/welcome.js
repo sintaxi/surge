@@ -18,33 +18,31 @@ describe('welcome message', function (done) {
   })
 
   it('Run `surge`', function (done) {
-    this.timeout(15000)
+    this.timeout(1500)
     nixt(opts)
       .run(surge)
       .on(/.*email:.*/).respond('brock+test@chloi.io\n')
       .on(/.*password:.*/).respond('12345\n')
       .expect(function (result) {
         should(result.stdout).match(/Welcome/)
-        should(result.stdout).match(/Surge/)
       })
       .end(done)
   })
 
   it('Run `surge login` when already logged in', function (done) {
-    this.timeout(15000)
+    this.timeout(1500)
     nixt(opts)
       .run(surge + 'login')
       .on(/.*email:.*/).respond('brock+test@chloi.io\n')
       .on(/.*password:.*/).respond('12345\n')
       .expect(function (result) {
-        should(result.stdout).match(/Surge/)
         should(result.stdout).match(/brock\+test@chloi\.io/)
       })
       .end(done)
   })
 
   it('Run `surge login`', function (done) {
-    this.timeout(15000)
+    this.timeout(1500)
     nixt(opts)
       .exec(surge + 'logout')
       .run(surge + 'login')

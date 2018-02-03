@@ -7,7 +7,7 @@ var endpoint = typeof process.env.ENDPOINT !== 'undefined' ? ' -e ' + process.en
 
 var user = "brock+test@chloi.io"
 var pass = "12345"
-var cmd  = 'node ' + pkg.bin + endpoint
+var surge  = 'node ' + pkg.bin + endpoint
 
 
 var opts = {
@@ -21,13 +21,25 @@ describe('crud', function (done) {
 
   })
 
-  it('should access cname file when no arg present', function (done) {
-    this.timeout(25000)
+  it('work', function (done) {
+    this.timeout(5000)
     nixt(opts)
     .exec(surge + 'logout')
     .on(/.*email:.*/).respond(user + "\n")
-    .on(/.*password:.*/).respond(pass "\n")
-    .run(surge + './test/fixtures/projects/hello-cname')
+    .on(/.*password:.*/).respond(pass + "\n")
+    .run(surge + './test/fixtures/projects/cname-world')
+    .expect(function (result) {
+      should(/Success/).match(/Success/)
+    }).end(done)
+  })
+
+  it('should access cname file when no arg present', function (done) {
+    this.timeout(5000)
+    nixt(opts)
+    .exec(surge + 'logout')
+    .on(/.*email:.*/).respond(user + "\n")
+    .on(/.*password:.*/).respond(pass + "\n")
+    .run(surge + './test/fixtures/projects/cname-world')
     .expect(function (result) {
       should(result.stdout).match(/2 file/)
       should(result.stdout).match(/Success! Project is published and running at cli-test-2/)
@@ -35,7 +47,7 @@ describe('crud', function (done) {
   })
 
   it('`surge` with CNAME file and protocol', function (done) {
-    this.timeout(25000)
+    this.timeout(5000)
     nixt(opts)
       .run(surge + './test/fixtures/cli-test-3.surge.sh')
       .expect(function (result) {
@@ -45,7 +57,7 @@ describe('crud', function (done) {
       .end(done)
   })
   it('`surge` with CNAME file and subdomain', function (done) {
-    this.timeout(25000)
+    this.timeout(5000)
     nixt(opts)
       .run(surge + './test/fixtures/cli-test-4.surge.sh')
       .expect(function (result) {
@@ -55,7 +67,7 @@ describe('crud', function (done) {
       .end(done)
   })
   it('Should let `surge --domain` override CNAME', function (done) {
-    this.timeout(25000)
+    this.timeout(5000)
 
     var subdomain = ''
 

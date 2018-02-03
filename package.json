@@ -38,7 +38,7 @@
   ],
   "scripts": {
     "test": "mocha ./test/basic.js -t 5000",
-    "test:local": "ENDPOINT='localhost:5001' ./node_modules/.bin/mocha"
+    "test:local": "ENDPOINT='surge.lvh.me' mocha ./test/basic -t 4000"
   },
   "repository": {
     "type": "git",
