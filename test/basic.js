@@ -22,7 +22,7 @@ describe("surge " + testid + " using " + user, function () {
       nixt({ colors: false })
       .run(surge + 'logout') // Logout again afterwards
       .expect(function (result) {
-        should(result.stdout).match(/(Not currently authenticated)|(Token removed from )/)
+        should(result.stdout).match(/(Not Authenticated)|(Token removed from )/)
       }).end(done)
     })
   })
@@ -156,7 +156,7 @@ describe("surge " + testid + " using " + user, function () {
       nixt({ colors: false })
       .run(surge + 'whoami')
       .expect(function (result) {
-        should(result.stdout).match(/Logged in as brock/)
+        should(result.stdout).match(new RegExp(user))
       }).end(done)
     })
 
@@ -172,7 +172,7 @@ describe("surge " + testid + " using " + user, function () {
       nixt({ colors: false })
       .run(surge + 'whoami')
       .expect(function (result) {
-        should(result.stdout).match(/Not currently authenticated/)
+        should(result.stdout).match(/Not Authenticated/)
       }).end(done)
     })
 
