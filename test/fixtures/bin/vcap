@@ -1,0 +1,17 @@
+#! /usr/bin/env node
+
+// var surge = require('../../../')({
+//   name: "vcap",
+//   cmd: "vcap",
+//   domain: "vcap.me",
+// })
+
+var surge = require('../../../')({
+  cmd: "vcap",
+  name: "VCAP CDN",
+  platform: "vcap.me",
+  endpoint: "surge.vcap.me",
+  default: "publish" 
+})
+
+surge(process.argv.slice(2))
