@@ -42,7 +42,7 @@ describe("surge " + testid + " using " + user, function () {
       nixt(opts)
       .run(surge + '--version')
       .expect(function(result) {
-        should(result.stdout).be.equal(pkg.version)
+        should(result.stdout).match(new RegExp(pkg.version))
       }).end(done)
     })
 
@@ -50,7 +50,7 @@ describe("surge " + testid + " using " + user, function () {
       nixt(opts)
       .run(surge + '-V')
       .expect(function(result) {
-        should(result.stdout).be.equal(pkg.version)
+        should(result.stdout).match(new RegExp(pkg.version))
       }).end(done)
     })
 
@@ -138,7 +138,7 @@ describe("surge " + testid + " using " + user, function () {
   })
 
   describe('auth', function (done) {
-    this.timeout(1500)
+    this.timeout(3500)
 
     it('should be able to login', function (done) {
       nixt({ colors: false })
