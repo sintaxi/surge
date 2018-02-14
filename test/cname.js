@@ -22,7 +22,7 @@ describe('crud', function (done) {
   })
 
   it('work', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
     nixt(opts)
     .exec(surge + 'logout')
     .on(/.*email:.*/).respond(user + "\n")
@@ -34,7 +34,7 @@ describe('crud', function (done) {
   })
 
   it('should access cname file when no arg present', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
     nixt(opts)
     .exec(surge + 'logout')
     .on(/.*email:.*/).respond(user + "\n")
@@ -47,7 +47,7 @@ describe('crud', function (done) {
   })
 
   it('`surge` with CNAME file and protocol', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
     nixt(opts)
       .run(surge + './test/fixtures/cli-test-3.surge.sh')
       .expect(function (result) {
@@ -57,7 +57,7 @@ describe('crud', function (done) {
       .end(done)
   })
   it('`surge` with CNAME file and subdomain', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
     nixt(opts)
       .run(surge + './test/fixtures/cli-test-4.surge.sh')
       .expect(function (result) {
@@ -67,7 +67,7 @@ describe('crud', function (done) {
       .end(done)
   })
   it('Should let `surge --domain` override CNAME', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
 
     var subdomain = ''
 

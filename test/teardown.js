@@ -14,7 +14,7 @@ describe('teardown', function () {
   var subdomain = ''
 
   before(function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
 
     nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
@@ -30,7 +30,7 @@ describe('teardown', function () {
   })
 
   it('`surge teardown`', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
 
     nixt(opts)
       .run(surge + 'teardown')

@@ -31,7 +31,7 @@ Run `surge --help` to see the following overview of the `surge` command...
     -h, --help          show this help message
 
   Shorthand usage:
-    surge [project path] [domain]
+    surge [project] [domain]
 
   Additional commands:
     surge whoami        show who you are logged in as

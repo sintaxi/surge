@@ -12,7 +12,7 @@ var opts = {
 describe('publish', function (done) {
 
   before(function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
 
     nixt(opts)
       .run(surge + 'logout') // Logout before the test starts
@@ -20,12 +20,12 @@ describe('publish', function (done) {
   })
 
   it('Run `surge` to login and publish', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
     nixt(opts)
       .run(surge)
       .on(/.*email:.*/).respond('brock+test@chloi.io\n')
       .on(/.*password:.*/).respond('12345\n')
-      .on(/.*project path:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
+      .on(/.*project:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
       .on(/.*domain:.*/).respond('cli-test.surge.sh\n')
       .expect(function (result) {
         should(result.stdout).not.match('12345')
@@ -35,10 +35,10 @@ describe('publish', function (done) {
       .end(done)
   })
   it('Run `surge` when already logged in', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
     nixt(opts)
       .run(surge)
-      .on(/.*project path:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
+      .on(/.*project:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
       .on(/.*domain:.*/).respond('cli-test.surge.sh\n')
       .expect(function (result) {
         should(result.stdout).match(/1 file/)
@@ -47,7 +47,7 @@ describe('publish', function (done) {
       .end(done)
   })
   it('`surge`', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
     nixt(opts)
       .run(surge + './test/fixtures/cli-test.surge.sh cli-test.surge.sh')
       .expect(function (result) {
@@ -57,7 +57,7 @@ describe('publish', function (done) {
       .end(done)
   })
   it('`surge ./`', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
 
     nixt(opts)
       .run(surge + './test/fixtures/cli-test.surge.sh')
@@ -69,7 +69,7 @@ describe('publish', function (done) {
       .end(done)
   })
   it('`surge --project`', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
 
     nixt(opts)
       .run(surge + '--project ./test/fixtures/cli-test.surge.sh')
@@ -81,11 +81,11 @@ describe('publish', function (done) {
       .end(done)
   })
   it('`surge --domain`', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
 
     nixt(opts)
       .run(surge + '--domain cli-test.surge.sh')
-      .on(/.*project path:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
+      .on(/.*project:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
       .on(/.*domain:.*/).respond('\n')
       .expect(function (result) {
         should(result.stdout).match(/1 file/)
@@ -94,7 +94,7 @@ describe('publish', function (done) {
       .end(done)
   })
   it('`surge --project --domain`', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
 
     nixt(opts)
       .run(surge + '--domain cli-test.surge.sh --project ./test/fixtures/cli-test.surge.sh')
@@ -105,7 +105,7 @@ describe('publish', function (done) {
       .end(done)
   })
   it('Should not publish a project a nonexistent directory', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
 
     nixt(opts)
       .run(surge + '--project ./test/fixtures/cli-test-0.surge.sh')
@@ -117,7 +117,7 @@ describe('publish', function (done) {
       .end(done)
   })
   it('Should not publish a project it doesn’t have access to', function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
     nixt(opts)
       .run(surge + './test/fixtures/cli-test.surge.sh cli-test-5.surge.sh')
       .expect(function (result) {
@@ -129,7 +129,7 @@ describe('publish', function (done) {
   })
 
   after(function (done) {
-    this.timeout(5000)
+    this.timeout(1500)
 
     nixt(opts)
       .run(surge + 'logout') // Logout after the test is over

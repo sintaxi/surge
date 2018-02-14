@@ -23,7 +23,7 @@ var opts = {
 //       .run(surge)
 //       .on(/.*email:.*/).respond('brock+test@chloi.io\n')
 //       .on(/.*password:.*/).respond('12345\n')
-//       .on(/.*project path:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
+//       .on(/.*project:.*/).respond('./test/fixtures/cli-test.surge.sh\n')
 //       .on(/.*domain:.*/).respond('\n')
 //       .expect(function (result) {
 //         subdomain = result.stdout.split('Project is published and running at')[1].trim()
@@ -78,7 +78,7 @@ var opts = {
 //   // })
 
 //   // it('`surge ssl --domain` with no arg', function (done) {
-//   //   this.timeout(5000)
+//   //   this.timeout(1500)
 //   //
 //   //   nixt(opts)
 //   //     .run(surge + '--endpoint localhost:5001 ssl --domain\n')
