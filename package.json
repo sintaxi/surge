@@ -5,7 +5,7 @@
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./lib/cli.js",
   "dependencies": {
-    "cli-table2": "^0.2.0",
+    "cli-table3": "^0.5.0",
     "du": "0.1.0",
     "fstream-ignore": "1.0.2",
     "inquirer": "",
