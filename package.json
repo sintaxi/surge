@@ -8,7 +8,7 @@
     "cli-table3": "^0.5.1",
     "du": "0.1.0",
     "fstream-ignore": "^1.0.5",
-    "inquirer": "",
+    "inquirer": "^6.2.2",
     "is-domain": "0.0.1",
     "minimist": "1.1.1",
     "moniker": "0.1.2",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "commander": "2.9.0",
-    "mocha": "*",
+    "mocha": "^5.2.0",
     "nixt": "0.4.1",
     "should": "7.1.0",
     "yargs": "3.30.0"
