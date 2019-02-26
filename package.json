@@ -24,7 +24,7 @@
   "devDependencies": {
     "commander": "2.9.0",
     "mocha": "^5.2.0",
-    "nixt": "0.4.1",
+    "nixt": "^0.5.1",
     "should": "7.1.0",
     "yargs": "3.30.0"
   },
