@@ -17,21 +17,17 @@ It’s easier to show than tell so let’s get to it! The following command will
 Run `surge --help` to see the following overview of the `surge` command...
 
 ```
-  Surge – Single-command web publishing. (v0.17.6)
+
+  Surge – Single-command web publishing. (v0.20.3)
 
   Usage:
-    surge [options]
+    surge <project> <domain>
 
   Options:
-    -p, --project       path to projects asset directory (./)
-    -d, --domain        domain of your project (<random>.surge.sh)
     -a, --add           adds user to list of collaborators (email address)
     -r, --remove        removes user from list of collaborators (email address)
     -V, --version       show the version number
     -h, --help          show this help message
-
-  Shorthand usage:
-    surge [project] [domain]
 
   Additional commands:
     surge whoami        show who you are logged in as
@@ -39,6 +35,7 @@ Run `surge --help` to see the following overview of the `surge` command...
     surge login         only performs authentication step
     surge list          list all domains you have access to
     surge teardown      tear down a published project
+    surge plan          set account plan
 
   Guides:
     Getting started     surge.sh/help/getting-started-with-surge
