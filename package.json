@@ -5,10 +5,9 @@
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./lib/cli.js",
   "dependencies": {
-    "cli-table2": "^0.2.0",
-    "du": "0.1.0",
-    "fstream-ignore": "1.0.2",
-    "inquirer": "",
+    "cli-table3": "^0.5.1",
+    "fstream-ignore": "^1.0.5",
+    "inquirer": "^6.2.2",
     "is-domain": "0.0.1",
     "minimist": "1.1.1",
     "moniker": "0.1.2",
@@ -16,7 +15,7 @@
     "progress": "1.1.8",
     "prompt": "~0.2.14",
     "read": "1.0.5",
-    "request": "2.83.0",
+    "request": "^2.88.0",
     "split": "0.3.1",
     "surge-ignore": "0.2.0",
     "tarr": "1.0.3",
@@ -24,8 +23,8 @@
   },
   "devDependencies": {
     "commander": "2.9.0",
-    "mocha": "*",
-    "nixt": "0.4.1",
+    "mocha": "^5.2.0",
+    "nixt": "^0.5.1",
     "should": "7.1.0",
     "yargs": "3.30.0"
   },
