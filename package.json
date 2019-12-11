@@ -3,7 +3,7 @@
   "version": "0.21.3",
   "description": "CDN for front-end developers",
   "author": "Brock Whitten <brock@chloi.io>",
-  "bin": "./lib/cli.js",
+  "bin": "./bin/surge",
   "dependencies": {
     "cli-table3": "^0.5.1",
     "surge-fstream-ignore": "^1.0.6",
