@@ -9,7 +9,7 @@
     "surge-fstream-ignore": "^1.0.6",
     "inquirer": "^6.2.2",
     "is-domain": "0.0.1",
-    "minimist": "1.1.1",
+    "minimist": "1.2.3",
     "moniker": "0.1.2",
     "netrc": "0.1.4",
     "progress": "1.1.8",
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "commander": "2.9.0",
-    "mocha": "^5.2.0",
+    "mocha": "^7.1.2",
     "nixt": "^0.5.1",
     "should": "7.1.0",
     "yargs": "3.30.0"
