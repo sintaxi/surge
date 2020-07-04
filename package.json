@@ -10,7 +10,7 @@
     "inquirer": "^6.2.2",
     "prompt": "~0.2.14",
     "cli-table3": "^0.5.1",
-    "progress": "1.1.8",
+    "progress": "2.0.3",
     "is-domain": "0.0.1",
     "moniker": "0.1.2",
     "netrc": "0.1.4",
