@@ -1,6 +1,6 @@
 {
   "name": "surge",
-  "version": "0.21.3",
+  "version": "0.21.4",
   "description": "CDN for front-end developers",
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./lib/cli.js",
@@ -9,7 +9,7 @@
     "surge-fstream-ignore": "^1.0.6",
     "inquirer": "^6.2.2",
     "is-domain": "0.0.1",
-    "minimist": "1.1.1",
+    "minimist": "1.2.3",
     "moniker": "0.1.2",
     "netrc": "0.1.4",
     "progress": "1.1.8",
