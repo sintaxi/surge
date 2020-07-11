@@ -5,7 +5,7 @@
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./bin/surge",
   "dependencies": {
-    "surge-sdk": "0.2.0",
+    "surge-sdk": "0.2.3",
     "minimist": "1.2.3",
     "inquirer": "^6.2.2",
     "prompt": "~0.2.14",
