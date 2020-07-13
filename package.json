@@ -1,11 +1,11 @@
 {
   "name": "surge",
-  "version": "0.21.6",
+  "version": "0.22.0",
   "description": "CDN for front-end developers",
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./bin/surge",
   "dependencies": {
-    "surge-sdk": "0.2.3",
+    "surge-sdk": "0.2.4",
     "minimist": "1.2.3",
     "inquirer": "^6.2.2",
     "prompt": "~0.2.14",
