@@ -1,6 +1,6 @@
 {
   "name": "surge",
-  "version": "0.23.0-rc.2",
+  "version": "0.23.0-rc.3",
   "description": "CDN for front-end developers",
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./bin/surge",
@@ -17,7 +17,7 @@
     "read": "1.0.5",
     "request": "^2.88.0",
     "surge-ignore": "0.2.0",
-    "surge-sdk": "0.3.1",
+    "surge-sdk": "0.3.2",
     "url-parse-as-address": "1.0.0"
   },
   "devDependencies": {
