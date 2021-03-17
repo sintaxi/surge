@@ -5,6 +5,7 @@
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./bin/surge",
   "dependencies": {
+    "babar": "^0.2.0",
     "cli-table3": "^0.5.1",
     "colors": "^1.4.0",
     "inquirer": "^6.2.2",
@@ -16,7 +17,7 @@
     "read": "1.0.5",
     "request": "^2.88.0",
     "surge-ignore": "0.2.0",
-    "surge-sdk": "0.3.0",
+    "surge-sdk": "0.3.1",
     "url-parse-as-address": "1.0.0"
   },
   "devDependencies": {
