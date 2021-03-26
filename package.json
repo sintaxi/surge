@@ -8,6 +8,7 @@
     "babar": "^0.2.0",
     "cli-table3": "^0.5.1",
     "colors": "^1.4.0",
+    "human-readable-numbers": "^0.9.5",
     "inquirer": "^6.2.2",
     "is-domain": "0.0.1",
     "minimist": "1.2.3",
