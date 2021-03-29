@@ -19,7 +19,8 @@
     "request": "^2.88.0",
     "surge-ignore": "0.2.0",
     "surge-sdk": "0.3.2",
-    "url-parse-as-address": "1.0.0"
+    "url-parse-as-address": "1.0.0",
+    "xbytes": "^1.7.0"
   },
   "devDependencies": {
     "commander": "2.9.0",
