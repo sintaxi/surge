@@ -1,6 +1,6 @@
 {
   "name": "surge",
-  "version": "0.22.1",
+  "version": "0.23.0",
   "description": "CDN for front-end developers",
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./lib/cli.js",
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "commander": "2.9.0",
-    "mocha": "8.0.1",
+    "mocha": "^8.3.2",
     "nixt": "^0.5.1",
     "should": "7.1.0",
     "yargs": "3.30.0"
