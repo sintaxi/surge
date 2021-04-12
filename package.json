@@ -1,6 +1,6 @@
 {
   "name": "surge",
-  "version": "0.24.0-rc.1",
+  "version": "0.24.0-rc.2",
   "description": "CDN for front-end developers",
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./bin/surge",
