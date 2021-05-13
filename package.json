@@ -1,6 +1,6 @@
 {
   "name": "surge",
-  "version": "0.24.0-rc.6",
+  "version": "0.24.0-rc.7",
   "description": "Static Web Publishing",
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./bin/surge",
@@ -9,7 +9,7 @@
     "cli-table3": "^0.5.1",
     "colors": "^1.4.0",
     "human-readable-numbers": "^0.9.5",
-    "inquirer": "^6.2.2",
+    "prompts": "*",
     "is-domain": "0.0.1",
     "minimist": "1.2.3",
     "moniker": "0.1.2",
