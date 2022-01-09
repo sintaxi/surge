@@ -1,12 +1,12 @@
 {
   "name": "surge",
-  "version": "0.23.0",
+  "version": "0.23.1",
   "description": "CDN for front-end developers",
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./lib/cli.js",
   "dependencies": {
     "cli-table3": "^0.5.1",
-    "colors": "^1.4.0",
+    "colors": "1.4.0",
     "inquirer": "^6.2.2",
     "is-domain": "0.0.1",
     "minimist": "1.2.3",
