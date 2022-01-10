@@ -1,13 +1,13 @@
 {
   "name": "surge",
-  "version": "0.24.0-rc.12",
+  "version": "0.24.0-rc.13",
   "description": "Static Web Publishing",
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./bin/surge",
   "dependencies": {
     "babar": "^0.2.0",
-    "cli-table3": "^0.5.1",
-    "colors": "^1.4.0",
+    "cli-table3": "0.6.1",
+    "colors": "1.4.0",
     "human-readable-numbers": "^0.9.5",
     "prompts": "*",
     "is-domain": "0.0.1",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "commander": "2.9.0",
-    "mocha": "8.3.0",
+    "mocha": "9.1.3",
     "nixt": "^0.5.1",
     "should": "7.1.0",
     "yargs": "3.30.0"
