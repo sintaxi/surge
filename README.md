@@ -36,6 +36,7 @@ Run `surge --help` to see the following overview of the `surge` command...
     surge list          list all domains you have access to
     surge teardown      tear down a published project
     surge plan          set account plan
+    surge card          update billing information
 
   Guides:
     Getting started     surge.sh/help/getting-started-with-surge
