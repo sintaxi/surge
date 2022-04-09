@@ -9,7 +9,7 @@
     "colors": "1.4.0",
     "inquirer": "^6.2.2",
     "is-domain": "0.0.1",
-    "minimist": "1.2.3",
+    "minimist": "1.2.6",
     "moniker": "0.1.2",
     "netrc": "0.1.4",
     "progress": "1.1.8",
