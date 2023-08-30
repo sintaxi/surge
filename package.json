@@ -9,12 +9,11 @@
     "colors": "1.4.0",
     "inquirer": "^6.2.2",
     "is-domain": "0.0.1",
-    "minimist": "1.2.3",
+    "minimist": "^1.2.8",
     "moniker": "0.1.2",
     "netrc": "0.1.4",
     "progress": "1.1.8",
     "read": "1.0.5",
-    "request": "^2.88.0",
     "split": "0.3.1",
     "surge-fstream-ignore": "^1.0.6",
     "surge-ignore": "0.2.0",
@@ -23,7 +22,7 @@
   },
   "devDependencies": {
     "commander": "2.9.0",
-    "mocha": "^8.3.2",
+    "mocha": "^8.4.0",
     "nixt": "^0.5.1",
     "should": "7.1.0",
     "yargs": "3.30.0"
@@ -40,5 +39,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/sintaxi/surge.git"
+  },
+  "engines": {
+    "node": ">=16.15.0"
   }
 }
