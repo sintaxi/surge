@@ -1,6 +1,6 @@
 {
   "name": "surge",
-  "version": "0.24.1",
+  "version": "0.24.2",
   "description": "Static Web Publishing",
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./bin/surge",
