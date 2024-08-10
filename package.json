@@ -3,6 +3,9 @@
   "version": "0.24.1",
   "description": "Static Web Publishing",
   "author": "Brock Whitten <brock@chloi.io>",
+  "preversion": "npm test",
+  "version": "npm publish",
+  "postversion": "git push --no-verify && git push --tags --no-verify && git push --no-verify",
   "bin": "./bin/surge",
   "dependencies": {
     "babar": "^0.2.0",
