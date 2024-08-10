@@ -3,9 +3,6 @@
   "version": "0.24.1",
   "description": "Static Web Publishing",
   "author": "Brock Whitten <brock@chloi.io>",
-  "preversion": "npm test",
-  "version": "npm publish",
-  "postversion": "git push --no-verify && git push --tags --no-verify && git push --no-verify",
   "bin": "./bin/surge",
   "dependencies": {
     "babar": "^0.2.0",
@@ -39,6 +36,9 @@
     "test"
   ],
   "scripts": {
+    "preversion": "npm test",
+    "version": "npm publish",
+    "postversion": "git push --no-verify && git push --tags --no-verify && git push --no-verify",
     "test": "mocha ./test/basic.js -t 5000",
     "test:local": "ENDPOINT='surge.lvh.me' mocha ./test/basic -t 4000"
   },
