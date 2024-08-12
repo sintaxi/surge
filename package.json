@@ -18,8 +18,8 @@
     "read": "1.0.5",
     "request": "^2.88.0",
     "surge-ignore": "0.2.0",
-    "surge-sdk": "0.6.2",
-    "surge-stream": "0.6.2",
+    "surge-sdk": "0.6.4",
+    "surge-stream": "0.6.4",
     "url-parse-as-address": "1.0.0",
     "xbytes": "^1.7.0"
   },
