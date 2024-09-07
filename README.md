@@ -9,10 +9,6 @@
 
     npm install -g surge
 
-### Help
-
-    surge --help
-
 ![surge-help](https://github.com/user-attachments/assets/5b3e7e92-008e-48b6-9c61-dc4cbf1bf22c)
 
 ### Publish
