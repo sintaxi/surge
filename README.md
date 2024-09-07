@@ -1,63 +1,20 @@
 # surge(.sh)
 
-> Publish web apps to a CDN with a single command and no setup required.
+> Single command static CDN publishing.
 
-[![NPM](https://nodei.co/npm/surge.png?global=true)](https://nodei.co/npm/surge/)
+![surge-help](https://github.com/user-attachments/assets/5b3e7e92-008e-48b6-9c61-dc4cbf1bf22c)
 
-This is the CLI client for the surge.sh hosted service. It’s what gets installed when you run `npm install -g surge`.
+## Install
 
-This CLI library manages access tokens locally and handles the upload and subsequent reporting when you publish a project using surge.
+```
+npm install -g surge
+```
 
 ## Usage
 
-It’s easier to show than tell so let’s get to it! The following command will deploy the current working directory to the surge servers where the application will be available at sintaxi.com.
-
-    $ surge ./ sintaxi.com
-
-Run `surge --help` to see the following overview of the `surge` command...
+To deploy current directory...
 
 ```
-
-  Surge – Single-command web publishing. (v0.20.3)
-
-  Usage:
-    surge <project> <domain>
-
-  Options:
-    -a, --add           adds user to list of collaborators (email address)
-    -r, --remove        removes user from list of collaborators (email address)
-    -V, --version       show the version number
-    -h, --help          show this help message
-
-  Additional commands:
-    surge whoami        show who you are logged in as
-    surge logout        expire local token
-    surge login         only performs authentication step
-    surge list          list all domains you have access to
-    surge teardown      tear down a published project
-    surge plan          set account plan
-
-  Guides:
-    Getting started     surge.sh/help/getting-started-with-surge
-    Custom domains      surge.sh/help/adding-a-custom-domain
-    Additional help     surge.sh/help
-
-  When in doubt, run surge from within your project directory.
-
+surge . example.com
 ```
 
-## CDN Features
-
-- Custom CNAME & custom SSL
-- Fallback 404.html pages
-- HTML5 mode 200.html pages
-- Stays out of `git`s way
-- Supports clean URLs && trailing slashes `/`
-- Implicit signup
-- Supports CNAME files
-
-If you’re using tools like Grunt, Gulp, or a static site generator like Jekyll, your files are output into a compile directory like `_site/`, `build/`, or `www/`. From the root of your project, pass Surge the path to this directory to upload your compiled assets.
-
-    surge www
-
-You may also add this directory to your `.gitignore` to keep your compiled assets out of your Git history.
