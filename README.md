@@ -1,15 +1,17 @@
 
-<h1 align="center">surge ⚡ static web publishing</h1>
+<h1 align="center">surge</h1>
 
 <p align="center">
-  <i align="center"><b>🎉 Over 12 Million publishings LIVE! 🎉</b></i>
+  <i align="center"><b>⚡ static web publishing ⚡</b></i>
 </p>
+
+With over 12 Million deployments available accross 8 regions globally surge is one of the preferred tools for publishing static content to the web. Surge's generous free plan of unlimited custom domains and unlimited deployments makes it a valuable tool for both staging and production builds.
+
+![surge-help](https://github.com/user-attachments/assets/5b3e7e92-008e-48b6-9c61-dc4cbf1bf22c)
 
 ## Install
 
     npm install -g surge
-
-![surge-help](https://github.com/user-attachments/assets/5b3e7e92-008e-48b6-9c61-dc4cbf1bf22c)
 
 ### Publish
 
