@@ -1,8 +1,8 @@
 
-<h1 align="center">⚡ Surge(.sh) - Static Web Publishing ⚡</h1>
+<h1 align="center">surge ⚡ static web publishing</h1>
 
 <p align="center">
-  <i align="center"><b>Over 12 Million publishings LIVE!</b></i>
+  <i align="center"><b>🎉 Over 12 Million publishings LIVE! 🎉</b></i>
 </p>
 
 ## Install
