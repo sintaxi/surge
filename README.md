@@ -1,9 +1,5 @@
 
-<h1 align="center">surge</h1>
-
-> Single command static CDN publishing.
-
-** on the Surge.sh Platform**
+<h1 align="center">⚡ Surge(.sh) - Static Web Publishing ⚡</h1>
 
 <p align="center">
   <i align="center"><b>Over 12 Million publishings LIVE!</b></i>
