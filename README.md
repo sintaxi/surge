@@ -1,6 +1,13 @@
-# surge(.sh)
+
+<h1 align="center">surge</h1>
 
 > Single command static CDN publishing.
+
+** on the Surge.sh Platform**
+
+<p align="center">
+  <i align="center"><b>Over 12 Million publishings LIVE!</b></i>
+</p>
 
 ## Install
 
@@ -18,6 +25,6 @@
 
 ![surge-publish-output](https://github.com/user-attachments/assets/9ef28a0b-9491-4994-8800-8ea8f97975d8)
 
-Your site is now live at `https://hello.surge.sh`...
+Your site is now live in `8` regions globally! View it at `https://hello.surge.sh`...
 
 ![surge-publish-results](https://github.com/user-attachments/assets/9bf53934-de53-4307-98b3-b90ab07c167e)
