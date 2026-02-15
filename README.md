@@ -26,3 +26,11 @@ This API-first approach makes Surge well-suited for AI-driven workloads where ag
 Your site is now live in `10` regions globally! View it at `https://hello.surge.sh`...
 
 ![surge-publish-results](https://github.com/user-attachments/assets/9bf53934-de53-4307-98b3-b90ab07c167e)
+
+### License
+
+Copyright © 2012-2026 Chloi Inc. All rights reserved.
+
+"Surge" is a trademark of Chloi Inc.
+
+This CLI is released under the ISC License.
