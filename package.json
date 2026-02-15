@@ -2,6 +2,20 @@
   "name": "surge",
   "version": "0.24.7",
   "description": "Static Web Publishing",
+  "keywords": [
+    "surge",
+    "harp",
+    "static",
+    "deploy",
+    "publish",
+    "hosting",
+    "cdn",
+    "cli",
+    "web",
+    "jamstack",
+    "frontend",
+    "spa"
+  ],
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./bin/surge",
   "dependencies": {
