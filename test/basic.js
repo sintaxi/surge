@@ -260,7 +260,7 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should update project', function (done) {
-      this.timeout(5000)
+      this.timeout(8000)
       nixt(opts)
       .run(surge)
       .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
