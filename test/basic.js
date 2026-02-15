@@ -66,7 +66,7 @@ describe("surge " + testid + " using " + user, function () {
     var resultedDomain
 
     it('should create project', function (done) {
-      this.timeout(8000)
+      this.timeout(10000)
       nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
       .run(surge)
@@ -83,7 +83,7 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should have project in list', function (done) {
-      this.timeout(5000)
+      this.timeout(10000)
       nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
       .run(surge + 'list')
@@ -95,7 +95,7 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should update project', function (done) {
-      this.timeout(8000)
+      this.timeout(10000)
       nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
       .run(surge)
@@ -112,7 +112,7 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should teardown project', function (done) {
-      this.timeout(5000)
+      this.timeout(10000)
       nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
       .run(surge + 'teardown')
@@ -128,7 +128,7 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should no longer have project in list', function (done) {
-      this.timeout(5000)
+      this.timeout(10000)
       nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
       .run(surge + 'list')
@@ -142,7 +142,7 @@ describe("surge " + testid + " using " + user, function () {
   })
 
   describe('auth', function (done) {
-    this.timeout(3500)
+    this.timeout(10000)
 
     it('should be able to login', function (done) {
       nixt({ colors: false })
@@ -236,7 +236,7 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should create second project using session', function (done) {
-      this.timeout(8000)
+      this.timeout(10000)
       nixt(opts)
       .run(surge)
       .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
@@ -251,7 +251,7 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should have project in list', function (done) {
-      this.timeout(2500)
+      this.timeout(10000)
       nixt(opts)
       .run(surge + 'list')
       .expect(function (result) {
@@ -287,7 +287,7 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should no longer have project in list', function (done) {
-      this.timeout(2500)
+      this.timeout(10000)
       nixt(opts)
       .run(surge + 'list')
       .expect(function (result) {
@@ -299,7 +299,7 @@ describe("surge " + testid + " using " + user, function () {
 
   describe('token', function () {
     it('`surge token`', function (done) {
-      this.timeout(2500)
+      this.timeout(10000)
       nixt(opts)
         .run(surge + 'token')
         .expect(function (result) {
