@@ -9,7 +9,7 @@ program
   .command('up')
   .action(surge.publish({
     preProject: function (req, next) {
-      req.project = path.resolve('./test/fixtures/cli-test.surge.sh')
+      req.project = path.resolve('./test/fixtures/projects/hello-world')
       next()
     }
   }))
