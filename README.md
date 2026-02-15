@@ -29,8 +29,6 @@ Your site is now live in `10` regions globally! View it at `https://hello.surge.
 
 ### License
 
-Copyright © 2012-2026 Chloi Inc. All rights reserved.
+Copyright © 2012-2026 Chloi Inc. Released under the ISC License.
 
 "Surge" is a trademark of Chloi Inc.
-
-This CLI is released under the ISC License.
