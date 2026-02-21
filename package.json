@@ -26,7 +26,7 @@
     "human-readable-numbers": "^0.9.5",
     "ignore": "^7.0.5",
     "is-domain": "0.0.1",
-    "prompts": "*",
+    "prompts": "2.4.2",
     "minimist": "1.2.6",
     "moniker": "0.1.2",
     "netrc": "0.1.4",
