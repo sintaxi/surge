@@ -32,8 +32,8 @@
     "progress": "2.0.3",
     "read": "1.0.5",
     "surge-ignore": "0.2.0",
-    "surge-sdk": "0.8.0",
-    "surge-stream": "0.8.0",
+    "surge-sdk": "0.9.0",
+    "surge-stream": "0.9.0",
     "url-parse-as-address": "1.0.0",
     "xbytes": "^1.7.0"
   },
