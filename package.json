@@ -19,12 +19,12 @@
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./bin/surge",
   "dependencies": {
-    "axios": "^1.7.3",
-    "babar": "^0.2.0",
+    "axios": "1.13.5",
+    "babar": "0.2.3",
     "cli-table3": "0.6.5",
     "colors": "1.4.0",
-    "human-readable-numbers": "^0.9.5",
-    "ignore": "^7.0.5",
+    "human-readable-numbers": "0.9.5",
+    "ignore": "7.0.5",
     "is-domain": "0.0.1",
     "prompts": "2.4.2",
     "minimist": "1.2.8",
@@ -36,11 +36,11 @@
     "surge-sdk": "0.10.1",
     "surge-stream": "0.10.1",
     "url-parse-as-address": "1.0.0",
-    "xbytes": "^1.7.0"
+    "xbytes": "1.9.1"
   },
   "devDependencies": {
     "mocha": "12.0.0-beta-10",
-    "nixt": "^0.5.1",
+    "nixt": "0.5.1",
     "should": "13.2.3"
   },
   "license": "ISC",
