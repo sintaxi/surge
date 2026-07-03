@@ -23,9 +23,9 @@ var testts = (new Date()).getTime()
 var testid = "cli-test-" + testts
 var user = "brock"+ testid + "@chloi.io"
 
-// must never be a substring of the testid, domain, or email —
-// the publish tests assert the password is not echoed in output
-var pass = "pw-" + String(testts).split("").reverse().join("")
+// random so it is unguessable, and never a substring of the testid,
+// domain, or email — the publish tests assert it is not echoed in output
+var pass = "pw-" + require('crypto').randomBytes(12).toString('hex')
 
 describe("surge " + testid + " using " + user, function () {
 
@@ -324,6 +324,28 @@ describe("surge " + testid + " using " + user, function () {
     //     })
     //     .end(done)
     // })
+  })
+
+  describe('cleanup', function () {
+    it('should nuke the test account', function (done) {
+      this.timeout(15000)
+      nixt(opts)
+        .run(surge + 'nuke')
+        .on(/.*email:.*/).respond(user + '\n')     // only fires if a prior
+        .on(/.*password:.*/).respond(pass + '\n')  // failure left us logged out
+        .expect(function (result) {
+          should(result.stdout).match(/Success/)
+        }).end(done)
+    })
+
+    it('should not be authenticated after nuke', function (done) {
+      this.timeout(15000)
+      nixt({ colors: false })
+        .run(surge + 'whoami')
+        .expect(function (result) {
+          should(result.stdout).match(/Not Authenticated/)
+        }).end(done)
+    })
   })
 
 })
