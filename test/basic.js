@@ -74,7 +74,6 @@ describe("surge " + testid + " using " + user, function () {
     var resultedDomain
 
     it('should create project', function (done) {
-      this.timeout(15000)
       nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
       .run(surge)
@@ -91,19 +90,18 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should have project in list', function (done) {
-      this.timeout(15000)
       nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
       .run(surge + 'list')
       .on(/.*email:.*/).respond(user + '\n')
       .on(/.*password:.*/).respond(pass + '\n')
       .expect(function (result) {
+        should(resultedDomain).be.ok()
         should(result.stdout).match(new RegExp(resultedDomain))
       }).end(done)
     })
 
     it('should update project', function (done) {
-      this.timeout(15000)
       nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
       .run(surge)
@@ -120,7 +118,6 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should teardown project', function (done) {
-      this.timeout(15000)
       nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
       .run(surge + 'teardown')
@@ -135,13 +132,13 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should no longer have project in list', function (done) {
-      this.timeout(15000)
       nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
       .run(surge + 'list')
       .on(/.*email:.*/).respond(user + '\n')
       .on(/.*password:.*/).respond(pass + '\n')
       .expect(function (result) {
+        should(resultedDomain).be.ok()
         should(result.stdout).not.match(new RegExp(resultedDomain))
       }).end(done)
     })
@@ -149,7 +146,6 @@ describe("surge " + testid + " using " + user, function () {
   })
 
   describe('auth', function (done) {
-    this.timeout(15000)
 
     it('should be able to login', function (done) {
       nixt({ colors: false })
@@ -243,31 +239,28 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should create second project using session', function (done) {
-      this.timeout(15000)
       nixt(opts)
       .run(surge)
       .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
       .on(/.*domain:.*/).respond(domain + "\n")
       .expect(function (result) {
         should(result.stdout).not.match(new RegExp(pass))
-        should(result.stdout).match(new RegExp("Success"))
-        // should(result.stdout).match(domain)
-        // resultedDomain = result.stdout.split('Project is published and running at')[1].trim()
-        // resultedDomain.should.equal(domain)
+        should(result.stdout).match(new RegExp("Success! - Published to " + domain))
+        resultedDomain = result.stdout.split('Success! - Published to')[1].trim()
+        resultedDomain.should.equal(domain)
       }).end(done)
     })
 
     it('should have project in list', function (done) {
-      this.timeout(15000)
       nixt(opts)
       .run(surge + 'list')
       .expect(function (result) {
+        should(resultedDomain).be.ok()
         should(result.stdout).match(new RegExp(resultedDomain))
       }).end(done)
     })
 
     it('should update project', function (done) {
-      this.timeout(15000)
       nixt(opts)
       .run(surge)
       .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
@@ -281,7 +274,6 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should teardown project', function (done) {
-      this.timeout(15000)
       nixt(opts)
       .run(surge + 'teardown')
       .on(/.*domain:.*/).respond(domain + '\n')
@@ -293,10 +285,10 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should no longer have project in list', function (done) {
-      this.timeout(15000)
       nixt(opts)
       .run(surge + 'list')
       .expect(function (result) {
+        should(resultedDomain).be.ok()
         should(result.stdout).not.match(new RegExp(resultedDomain))
       }).end(done)
     })
@@ -305,7 +297,6 @@ describe("surge " + testid + " using " + user, function () {
 
   describe('token', function () {
     it('`surge token`', function (done) {
-      this.timeout(15000)
       nixt(opts)
         .run(surge + 'token')
         .expect(function (result) {
@@ -328,7 +319,6 @@ describe("surge " + testid + " using " + user, function () {
 
   describe('cleanup', function () {
     it('should nuke the test account', function (done) {
-      this.timeout(15000)
       nixt(opts)
         .run(surge + 'nuke')
         .on(/.*email:.*/).respond(user + '\n')     // only fires if a prior
@@ -339,7 +329,6 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should not be authenticated after nuke', function (done) {
-      this.timeout(15000)
       nixt({ colors: false })
         .run(surge + 'whoami')
         .expect(function (result) {

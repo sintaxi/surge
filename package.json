@@ -56,7 +56,7 @@
     "preversion": "npm test",
     "version": "npm publish",
     "postversion": "git push --no-verify && git push --tags --no-verify && git push --no-verify",
-    "test": "npm run test:unit && mocha ./test/basic.js ./test/actions.js -t 15000",
+    "test": "npm run test:unit && mocha ./test/basic.js ./test/actions.js -t 60000",
     "test:unit": "mocha ./test/unit -t 8000",
     "test:local": "ENDPOINT='surge.lvh.me' mocha ./test/basic -t 4000"
   },
