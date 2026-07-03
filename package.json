@@ -26,11 +26,11 @@
     "human-readable-numbers": "0.9.5",
     "ignore": "7.0.5",
     "is-domain": "0.0.1",
-    "prompts": "2.4.2",
     "minimist": "1.2.8",
     "moniker": "0.1.2",
     "netrc": "0.1.4",
     "progress": "2.0.3",
+    "prompts": "2.4.2",
     "read": "1.0.5",
     "surge-ignore": "0.3.0",
     "surge-sdk": "0.10.3",
@@ -39,9 +39,13 @@
     "xbytes": "1.9.1"
   },
   "devDependencies": {
-    "mocha": "12.0.0-beta-10",
+    "mocha": "11.7.6",
     "nixt": "0.5.1",
     "should": "13.2.3"
+  },
+  "overrides": {
+    "diff": "8.0.3",
+    "serialize-javascript": "7.0.7"
   },
   "license": "ISC",
   "main": "./lib/surge.js",
@@ -52,7 +56,8 @@
     "preversion": "npm test",
     "version": "npm publish",
     "postversion": "git push --no-verify && git push --tags --no-verify && git push --no-verify",
-    "test": "mocha ./test/basic.js ./test/actions.js -t 15000",
+    "test": "npm run test:unit && mocha ./test/basic.js ./test/actions.js -t 15000",
+    "test:unit": "mocha ./test/unit -t 8000",
     "test:local": "ENDPOINT='surge.lvh.me' mocha ./test/basic -t 4000"
   },
   "repository": {

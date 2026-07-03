@@ -1,6 +1,13 @@
 var nixt = require('nixt')
 var should = require('should')
 var pkg = require('../package.json')
+var fs = require('fs')
+var os = require('os')
+var path = require('path')
+
+// isolate every spawned CLI in a throwaway HOME so the tests never
+// touch the developer's real ~/.netrc (nixt clones process.env)
+process.env.HOME = process.env.USERPROFILE = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-test-'))
 
 var endpoint = typeof process.env.ENDPOINT !== 'undefined' ? ' -e ' + process.env.ENDPOINT + ' ' : ' '
 var surge = 'node ' + pkg.bin + endpoint
@@ -31,14 +38,12 @@ describe("surge " + testid + " using " + user, function () {
 
   describe("helpers", function(){
 
-    it.skip('should catch invalid arguments', function (done) {
+    it('should catch invalid arguments', function (done) {
       nixt({ colors: false })
       .run(surge + '--foo')
+      .code(1)
       .expect(function (result) {
-        should(result.stdout).match(/foo/)
-        should(result.stdout).match(/not/)
-      }).catch(function(result){
-        console.log(result)
+        should(result.stdout).match(/`foo` is not a surge argument/)
       }).end(done)
     })
 
@@ -75,7 +80,7 @@ describe("surge " + testid + " using " + user, function () {
       .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
       .on(/.*domain:.*/).respond(domain + "\n")
       .expect(function (result) {
-        should(result.stdout).not.match(pass)
+        should(result.stdout).not.match(new RegExp(pass))
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
         resultedDomain = result.stdout.split('Success! - Published to')[1].trim()
         resultedDomain.should.equal(domain)
@@ -104,7 +109,7 @@ describe("surge " + testid + " using " + user, function () {
       .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
       .on(/.*domain:.*/).respond(domain + "\n")
       .expect(function (result) {
-        should(result.stdout).not.match(pass)
+        should(result.stdout).not.match(new RegExp(pass))
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
         resultedDomain = result.stdout.split('Success! - Published to')[1].trim()
         resultedDomain.should.equal(domain)
@@ -123,7 +128,6 @@ describe("surge " + testid + " using " + user, function () {
         should(result.stdout).match(/Success/)
         should(result.stdout).match(/has been removed/)
         should(result.stdout).match(new RegExp(subdomain))
-        should(result.stdout).not.match(subdomain)
       }).end(done)
     })
 
@@ -242,7 +246,7 @@ describe("surge " + testid + " using " + user, function () {
       .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
       .on(/.*domain:.*/).respond(domain + "\n")
       .expect(function (result) {
-        should(result.stdout).not.match(pass)
+        should(result.stdout).not.match(new RegExp(pass))
         should(result.stdout).match(new RegExp("Success"))
         // should(result.stdout).match(domain)
         // resultedDomain = result.stdout.split('Project is published and running at')[1].trim()
@@ -266,7 +270,7 @@ describe("surge " + testid + " using " + user, function () {
       .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
       .on(/.*domain:.*/).respond(domain + "\n")
       .expect(function (result) {
-        should(result.stdout).not.match(pass)
+        should(result.stdout).not.match(new RegExp(pass))
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
         resultedDomain = result.stdout.split('Success! - Published to')[1].trim()
         resultedDomain.should.equal(domain)
@@ -282,7 +286,6 @@ describe("surge " + testid + " using " + user, function () {
         should(result.stdout).match(/Success/)
         should(result.stdout).match(/has been removed/)
         should(result.stdout).match(new RegExp(subdomain))
-        should(result.stdout).not.match(subdomain)
       }).end(done)
     })
 
