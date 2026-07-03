@@ -22,7 +22,10 @@ var opts = {
 var testts = (new Date()).getTime()
 var testid = "cli-test-" + testts
 var user = "brock"+ testid + "@chloi.io"
-var pass = testid
+
+// must never be a substring of the testid, domain, or email —
+// the publish tests assert the password is not echoed in output
+var pass = "pw-" + String(testts).split("").reverse().join("")
 
 describe("surge " + testid + " using " + user, function () {
 
