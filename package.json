@@ -32,8 +32,8 @@
     "prompts": "2.4.2",
     "read": "1.0.5",
     "surge-ignore": "0.3.0",
-    "surge-sdk": "0.14.0",
-    "surge-stream": "0.14.0",
+    "surge-sdk": "0.15.0",
+    "surge-stream": "0.15.0",
     "url-parse-as-address": "1.0.0",
     "xbytes": "1.9.1"
   },
