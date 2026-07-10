@@ -86,7 +86,7 @@ describe('tables', function () {
     it('shows no delta on a 2-day site (only one complete day)', function () {
       var out = tables.traffic(payload(['2026-07-01', '2026-07-02'], [5, 10])).toString()
       out.should.not.match(/% ↗/)
-      out.should.not.match(/% ↙/)
+      out.should.not.match(/% ↘/)
     })
 
   })
