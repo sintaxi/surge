@@ -74,12 +74,19 @@ describe('tables', function () {
     })
 
     it('shows uniques delta as a percent change, not a ratio', function () {
-      // uniques 5 -> 10 is +100%, and identical days show no delta at all
-      var doubled = tables.traffic(payload(['2026-07-01', '2026-07-02'], [5, 10])).toString()
+      // the trend compares the two most recent COMPLETE days: 5 -> 10 is
+      // +100% regardless of the partial count on today (the last entry)
+      var doubled = tables.traffic(payload(['2026-06-30', '2026-07-01', '2026-07-02'], [5, 10, 1])).toString()
       doubled.should.match(/100% ↗/)
 
-      var flat = tables.traffic(payload(['2026-07-01', '2026-07-02'], [7, 7])).toString()
+      var flat = tables.traffic(payload(['2026-06-30', '2026-07-01', '2026-07-02'], [7, 7, 1])).toString()
       flat.should.not.match(/1% ↗/)
+    })
+
+    it('shows no delta on a 2-day site (only one complete day)', function () {
+      var out = tables.traffic(payload(['2026-07-01', '2026-07-02'], [5, 10])).toString()
+      out.should.not.match(/% ↗/)
+      out.should.not.match(/% ↙/)
     })
 
   })
