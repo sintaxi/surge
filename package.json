@@ -48,6 +48,9 @@
     "serialize-javascript": "7.0.7"
   },
   "license": "ISC",
+  "engines": {
+    "node": ">=14"
+  },
   "main": "./lib/surge.js",
   "ignore": [
     "test"
