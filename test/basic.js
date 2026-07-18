@@ -386,6 +386,64 @@ describe("surge " + testid + " using " + user, function () {
     })
   })
 
+  describe('status', function () {
+    var customDomain = testid + "-status.lvh.me"
+
+    it('should report a platform subdomain as live', function (done) {
+      nixt(opts)
+        .run(surge + 'status ' + testid + '-nowhere.surge.sh')
+        .expect(function (result) {
+          should(result.stdout).match(/is live/)
+        }).end(done)
+    })
+
+    it('should show the one action for an unpointed custom domain', function (done) {
+      nixt(opts)
+        .run(surge + 'status ' + customDomain)
+        .expect(function (result) {
+          should(result.stdout).match(/waiting on dns/)
+          should(result.stdout).match(/CNAME/)
+          should(result.stdout).match(/A \(apex\)/)
+        }).end(done)
+    })
+
+    it('should print the status line after publishing to an unpointed custom domain', function (done) {
+      nixt(opts)
+        .run(surge + './test/fixtures/projects/hello-world ' + customDomain)
+        .expect(function (result) {
+          should(result.stdout).match(new RegExp("Success! - Published to " + customDomain))
+          should(result.stdout).match(/waiting on dns/)
+          should(result.stdout).match(/not pointed at surge yet/)
+        }).end(done)
+    })
+
+    it('should not print a status line for a platform subdomain publish', function (done) {
+      var domain = testid + "-quiet.surge.sh"
+      nixt(opts)
+        .run(surge + './test/fixtures/projects/hello-world ' + domain)
+        .expect(function (result) {
+          should(result.stdout).match(new RegExp("Success! - Published to " + domain))
+          should(result.stdout).not.match(/waiting on dns/)
+        }).end(done)
+    })
+
+    it('should teardown the status test projects', function (done) {
+      nixt(opts)
+        .run(surge + 'teardown ' + customDomain)
+        .expect(function (result) {
+          should(result.stdout).match(/has been removed/)
+        }).end(done)
+    })
+
+    it('should teardown the quiet project', function (done) {
+      nixt(opts)
+        .run(surge + 'teardown ' + testid + '-quiet.surge.sh')
+        .expect(function (result) {
+          should(result.stdout).match(/has been removed/)
+        }).end(done)
+    })
+  })
+
   describe('cleanup', function () {
     it('should nuke the test account', function (done) {
       nixt(opts)
