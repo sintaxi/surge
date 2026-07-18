@@ -317,6 +317,75 @@ describe("surge " + testid + " using " + user, function () {
     // })
   })
 
+  describe('scoped token', function () {
+    var subdomain = testid + "-three"
+    var domain = subdomain + ".surge.sh"
+    var otherDomain = testid + "-other.surge.sh"
+    var netrcPath = path.join(process.env.HOME, '.netrc')
+    var loginNetrc, scopedToken
+
+    it('should mint a token scoped to the domain', function (done) {
+      nixt(opts)
+        .run(surge + 'token add -d ' + domain + ' -m scoped-ci')
+        .expect(function (result) {
+          should(result.stdout).match(/([0-9a-f]{32})/)
+          should(result.stdout).match(new RegExp("Scoped to " + domain))
+          scopedToken = result.stdout.match(/([0-9a-f]{32})/)[1]
+        }).end(done)
+    })
+
+    it('should list the scoped token by id without exposing the value', function (done) {
+      nixt(opts)
+        .run(surge + 'tokens')
+        .expect(function (result) {
+          should(scopedToken).be.ok()
+          should(result.stdout).match(new RegExp("tok-" + scopedToken.slice(0, 8)))
+          should(result.stdout).match(/scoped-ci/)
+          should(result.stdout).not.match(new RegExp(scopedToken))
+        }).end(done)
+    })
+
+    it('should publish in scope on the scoped token alone', function (done) {
+      // swap the login token out of the netrc so this publish can only
+      // succeed on the scoped token's own authority — this is the path
+      // that breaks if scoped tokens lose the GET /account identity check
+      loginNetrc = fs.readFileSync(netrcPath, 'utf-8')
+      fs.writeFileSync(netrcPath, loginNetrc.replace(/password .*/, 'password ' + scopedToken))
+      nixt(opts)
+        .run(surge + './test/fixtures/projects/hello-world ' + domain)
+        .expect(function (result) {
+          should(result.stdout).not.match(/email:/)
+          should(result.stdout).match(new RegExp("Success! - Published to " + domain))
+        }).end(done)
+    })
+
+    it('should not publish out of scope', function (done) {
+      nixt(opts)
+        .run(surge + './test/fixtures/projects/hello-world ' + otherDomain)
+        .expect(function (result) {
+          should(result.stdout).match(/do not have permission/)
+          should(result.stdout).not.match(/Success/)
+        }).end(done)
+    })
+
+    it('should restore the login token and teardown', function (done) {
+      fs.writeFileSync(netrcPath, loginNetrc)
+      nixt(opts)
+        .run(surge + 'teardown ' + domain)
+        .expect(function (result) {
+          should(result.stdout).match(/has been removed/)
+        }).end(done)
+    })
+
+    it('should remove the scoped token by id', function (done) {
+      nixt(opts)
+        .run(surge + 'token rem tok-' + scopedToken.slice(0, 8))
+        .expect(function (result) {
+          should(result.stdout).match(/removed/)
+        }).end(done)
+    })
+  })
+
   describe('cleanup', function () {
     it('should nuke the test account', function (done) {
       nixt(opts)
