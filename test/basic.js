@@ -389,21 +389,14 @@ describe("surge " + testid + " using " + user, function () {
   describe('status', function () {
     var customDomain = testid + "-status.lvh.me"
 
-    it('should report a platform subdomain as live', function (done) {
+    it('should refuse status for an unpublished domain', function (done) {
       nixt(opts)
         .run(surge + 'status ' + testid + '-nowhere.surge.sh')
+        .code(1)
         .expect(function (result) {
-          should(result.stdout).match(/is live/)
-        }).end(done)
-    })
-
-    it('should show the one action for an unpointed custom domain', function (done) {
-      nixt(opts)
-        .run(surge + 'status ' + customDomain)
-        .expect(function (result) {
-          should(result.stdout).match(/waiting on dns/)
-          should(result.stdout).match(/CNAME/)
-          should(result.stdout).match(/A \(apex\)/)
+          // the shared 404 handler speaks first — the api body still
+          // carries "domain not published" for programmatic consumers
+          should(result.stdout).match(/Not Found/)
         }).end(done)
     })
 
@@ -414,6 +407,16 @@ describe("surge " + testid + " using " + user, function () {
           should(result.stdout).match(new RegExp("Success! - Published to " + customDomain))
           should(result.stdout).match(/waiting on dns/)
           should(result.stdout).match(/not pointed at surge yet/)
+        }).end(done)
+    })
+
+    it('should show the one action for the published unpointed domain', function (done) {
+      nixt(opts)
+        .run(surge + 'status ' + customDomain)
+        .expect(function (result) {
+          should(result.stdout).match(/waiting on dns/)
+          should(result.stdout).match(/CNAME/)
+          should(result.stdout).match(/A \(apex\)/)
         }).end(done)
     })
 
