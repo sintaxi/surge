@@ -118,4 +118,126 @@ describe('tables', function () {
 
   })
 
+  describe('certsShort', function () {
+
+    var cert = function (overrides) {
+      var c = {
+        issuer: "Let's Encrypt",
+        subjectAltNames: ['example.com', '*.example.com'],
+        expInDays: 42,
+        certName: 'provisioned',
+        autoRenew: true
+      }
+      Object.keys(overrides || {}).forEach(function (k) { c[k] = overrides[k] })
+      return c
+    }
+
+    it('renders one condensed line per cert — names and renewal, no issuer', function () {
+      var out = tables.certsShort([cert()], 100).toString()
+      out.should.match(/CERT/)
+      out.should.match(/example\.com, \*\.example\.com/)
+      out.should.match(/auto-renew/)
+      out.should.not.match(/Let's Encrypt/)
+      out.should.not.match(/expires/)
+    })
+
+    it('mirrors the instances table column widths so the boxes align', function () {
+      // label 10, domain 18, city 23, ip 21, provider 13, status 11 —
+      // cells are label / domain+city+ip / provider+status
+      var stripCodes = function (s) { return s.replace(new RegExp(String.fromCharCode(27) + '\\[[0-9;]*m', 'g'), '') }
+      var out = stripCodes(tables.certsShort([cert()], [10, 18, 23, 21, 13, 11]).toString())
+      var top = out.split('\n')[0]
+      top.indexOf('┬').should.equal(11)                    // after the label column
+      top.indexOf('┬', 12).should.equal(76)                // domain(18) + city(23) + ip(21) + 2 junctions
+      top.indexOf('┬', 77).should.equal(-1)                // no further junction — verdict cell runs to the edge
+      top.length.should.equal(103)                         // full table width
+    })
+
+    it('keeps the expiry countdown for an uploaded pem — that renewal is the user\'s', function () {
+      var out = tables.certsShort([cert({ certName: 'uploaded', autoRenew: false })], 100).toString()
+      out.should.match(/expires in 42 days/)
+      out.should.not.match(/auto-renew/)
+    })
+
+    it('treats the platform wildcard as ours — auto-renew, no countdown', function () {
+      var out = tables.certsShort([cert({ subjectAltNames: ['*.surge.sh', 'surge.sh'], certName: 'uploaded', autoRenew: false, expInDays: 149 })], 100, 'surge.sh').toString()
+      out.should.match(/auto-renew/)
+      out.should.not.match(/expires/)
+    })
+
+    it('reports an expired uploaded pem', function () {
+      tables.certsShort([cert({ certName: 'uploaded', autoRenew: false, expInDays: -3 })], 100)
+        .toString().should.match(/expired 3 days ago/)
+    })
+
+    it('renders cert and dns rows together in one verdicts box, ruled apart', function () {
+      var out = tables.verdicts([cert()], { via: 'ns' }, 100).toString()
+      out.should.match(/CERT/)
+      out.should.match(/auto-renew/)
+      out.should.match(/DNS/)
+      out.should.match(/using Surge Name Servers/)
+      out.should.match(/geo-aware/)
+      out.should.match(/├/)   // a rule separates the rows
+    })
+
+    it('renders a pending cert row when there are no certs yet', function () {
+      var out = tables.verdicts([], { via: null }, 100).toString()
+      out.should.match(/CERT/)
+      out.should.match(/none/)
+      out.should.match(/waiting on dns/)
+      // dns pointing at us makes the missing cert our move, not the user's
+      tables.verdicts([], { via: 'ns' }, 100).toString().should.match(/securing/)
+    })
+
+    it('reports every dns verdict in the box', function () {
+      tables.verdicts([], { via: 'cname' }, 100).toString().should.match(/using Surge CNAME Record/)
+      var a = tables.verdicts([], { via: 'a' }, 100).toString()
+      a.should.match(/using Surge A Record/)
+      a.should.match(/not geo-aware/)
+      var unresolved = tables.verdicts([], { via: null }, 100).toString()
+      unresolved.should.match(/not resolving to Surge/)
+      unresolved.should.match(/action required/)
+    })
+
+  })
+
+  describe('instances', function () {
+
+    var servers = [
+      { type: 'NS', domain: 'ns1.surge.world' },
+      { type: 'NS', domain: 'ns2.surge.world' },
+      { type: 'CNAME', domain: 'geo.surge.sh' },
+      { type: 'HTTP', domain: 'sfo.surge.sh', location: 'US, San Francisco', ip: '138.197.235.123', provider: 'D.Ocean', status: 'OK', statusColor: 'green', confirmation: 'ok', confirmationColor: 'green' }
+    ]
+
+    // colors chop the phrases mid-string — match on the uncolored text
+    var strip = function (s) { return s.replace(/\[[0-9;]*m/g, '') }
+
+    it('renders no header when the verdict is present — the verdicts box carries it', function () {
+      var out = strip(tables.instances(servers, { via: 'ns' }).toString())
+      out.should.not.match(/via Surge/)
+      out.should.not.match(/DNS/)
+      out.should.not.match(/ns1\.surge\.world/)
+      out.should.match(/sfo\.surge\.sh/)
+    })
+
+    it('the verdicts box built from the fleet widths matches the fleet table width', function () {
+      var fleet  = strip(tables.instances(servers, { via: 'ns' }).toString())
+      var widths = fleet.split('\n').slice(-1)[0].slice(1, -1).split('┴').map(function(s){ return s.length })
+      var box    = strip(tables.verdicts([], { via: 'ns' }, widths).toString())
+      box.split('\n')[0].length.should.equal(fleet.split('\n')[0].length)
+    })
+
+    it('replaces the static nameserver advice when the verdict is present', function () {
+      tables.instances(servers, { via: 'ns' }).toString().should.not.match(/ns1\.surge\.world/)
+    })
+
+    it('falls back to the static nameserver advice without a verdict (old server)', function () {
+      var out = tables.instances(servers).toString()
+      out.should.match(/ns1\.surge\.world/)
+      out.should.match(/geo\.surge\.sh/)
+    })
+
+  })
+
 })

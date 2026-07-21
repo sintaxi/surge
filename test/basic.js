@@ -84,7 +84,7 @@ describe("surge " + testid + " using " + user, function () {
       .expect(function (result) {
         should(result.stdout).not.match(new RegExp(pass))
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
-        resultedDomain = result.stdout.split('Success! - Published to')[1].trim()
+        resultedDomain = result.stdout.split('Success! - Published to')[1].trim().split(/\s+/)[0]
         resultedDomain.should.equal(domain)
       }).end(done)
     })
@@ -112,7 +112,7 @@ describe("surge " + testid + " using " + user, function () {
       .expect(function (result) {
         should(result.stdout).not.match(new RegExp(pass))
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
-        resultedDomain = result.stdout.split('Success! - Published to')[1].trim()
+        resultedDomain = result.stdout.split('Success! - Published to')[1].trim().split(/\s+/)[0]
         resultedDomain.should.equal(domain)
       }).end(done)
     })
@@ -246,7 +246,7 @@ describe("surge " + testid + " using " + user, function () {
       .expect(function (result) {
         should(result.stdout).not.match(new RegExp(pass))
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
-        resultedDomain = result.stdout.split('Success! - Published to')[1].trim()
+        resultedDomain = result.stdout.split('Success! - Published to')[1].trim().split(/\s+/)[0]
         resultedDomain.should.equal(domain)
       }).end(done)
     })
@@ -268,7 +268,7 @@ describe("surge " + testid + " using " + user, function () {
       .expect(function (result) {
         should(result.stdout).not.match(new RegExp(pass))
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
-        resultedDomain = result.stdout.split('Success! - Published to')[1].trim()
+        resultedDomain = result.stdout.split('Success! - Published to')[1].trim().split(/\s+/)[0]
         resultedDomain.should.equal(domain)
       }).end(done)
     })
@@ -400,13 +400,16 @@ describe("surge " + testid + " using " + user, function () {
         }).end(done)
     })
 
-    it('should print the status line after publishing to an unpointed custom domain', function (done) {
+    it('should carry the unpointed-domain state in the verdicts box plus one cta line', function (done) {
       nixt(opts)
         .run(surge + './test/fixtures/projects/hello-world ' + customDomain)
         .expect(function (result) {
           should(result.stdout).match(new RegExp("Success! - Published to " + customDomain))
+          should(result.stdout).match(/not resolving to Surge/)
           should(result.stdout).match(/waiting on dns/)
-          should(result.stdout).match(/not pointed at surge yet/)
+          should(result.stdout).match(/CNAME geo\.surge\.sh/)
+          // the old records block below the result is gone
+          should(result.stdout).not.match(/not pointed at surge yet/)
         }).end(done)
     })
 
@@ -420,12 +423,14 @@ describe("surge " + testid + " using " + user, function () {
         }).end(done)
     })
 
-    it('should not print a status line for a platform subdomain publish', function (done) {
+    it('should report geo-aware dns in the table for a platform subdomain publish', function (done) {
       var domain = testid + "-quiet.surge.sh"
       nixt(opts)
         .run(surge + './test/fixtures/projects/hello-world ' + domain)
         .expect(function (result) {
           should(result.stdout).match(new RegExp("Success! - Published to " + domain))
+          should(result.stdout).match(/using Surge Name Servers/)
+          should(result.stdout).match(/geo-aware/)
           should(result.stdout).not.match(/waiting on dns/)
         }).end(done)
     })
