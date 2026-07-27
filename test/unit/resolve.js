@@ -215,6 +215,31 @@ describe('discovery.resolve', function () {
     })
   })
 
+  it('does not re-log a prompted domain - the prompt echo already shows it', function (done) {
+    var logged = []
+    var realLog = helpers.log
+    helpers.log = function () { logged.push([].slice.call(arguments).join(' ')) }
+    helpers.read = function (opts, cb) { cb(null, 'typed.com') }
+    run({ prompt: true, log: true }, req([]), function (err, r) {
+      helpers.log = realLog
+      r.domain.should.equal('typed.com')
+      logged.filter(function (l) { return l.indexOf('typed.com') !== -1 }).should.have.length(0)
+      done()
+    })
+  })
+
+  it('logs an inferred domain when log is on', function (done) {
+    var logged = []
+    var realLog = helpers.log
+    helpers.log = function () { logged.push([].slice.call(arguments).join(' ')) }
+    dir('proj', { CNAME: 'from-cname.com\n' })
+    run({ log: true }, req(['proj']), function (err, r) {
+      helpers.log = realLog
+      logged.filter(function (l) { return l.indexOf('from-cname.com') !== -1 }).should.have.length(1)
+      done()
+    })
+  })
+
   it('aborts when the prompt is cancelled', function (done) {
     helpers.read = function (opts, cb) { cb(null, undefined) }
     run({ prompt: true }, req([]), function (err, r) {
