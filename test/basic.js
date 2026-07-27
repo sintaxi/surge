@@ -75,6 +75,16 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    it('should print debug usage for bare surge debug outside a project', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'debug')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/debug \[<domain>\] status/)
+        should(result.stdout).match(/debug \[<domain>\] encrypt/)
+      }).end(done)
+    })
+
     it('should point at the golden path when bare in a pipeline', function (done) {
       nixt({ colors: false })
       .run(surge.trim())
@@ -313,6 +323,34 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    it('should show the account panel for bare surge account', function (done) {
+      nixt(opts)
+      .run(surge + 'account')
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp(user))
+        should(result.stdout).match(/plan:/)
+      }).end(done)
+    })
+
+    it('should list revisions with surge revs', function (done) {
+      nixt(opts)
+      .run(surge + 'revs ' + domain)
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp(subdomain))
+      }).end(done)
+    })
+
+    it('should infer the domain from a CNAME for debug', function (done) {
+      var proj = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-cname-'))
+      fs.writeFileSync(path.join(proj, 'CNAME'), domain + '\n')
+      nixt(opts)
+      .cwd(proj)
+      .run('node ' + path.resolve(pkg.bin) + endpoint + 'debug')
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp(subdomain))
+      }).end(done)
+    })
+
     it('should publish the cwd when given only a domain', function (done) {
       nixt(opts)
       .cwd(path.join(__dirname, 'fixtures', 'projects', 'hello-world'))
@@ -459,6 +497,22 @@ describe("surge " + testid + " using " + user, function () {
           should(result.stdout).match(/CNAME geo\.surge\.sh/)
           // the old records block below the result is gone
           should(result.stdout).not.match(/not pointed at surge yet/)
+        }).end(done)
+    })
+
+    it('should reach status through the debug namespace', function (done) {
+      nixt(opts)
+        .run(surge + 'debug ' + customDomain)
+        .expect(function (result) {
+          should(result.stdout).match(/waiting on dns/)
+        }).end(done)
+    })
+
+    it('should reach status as an explicit debug verb', function (done) {
+      nixt(opts)
+        .run(surge + 'debug ' + customDomain + ' status')
+        .expect(function (result) {
+          should(result.stdout).match(/waiting on dns/)
         }).end(done)
     })
 

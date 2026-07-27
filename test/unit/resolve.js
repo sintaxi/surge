@@ -172,6 +172,59 @@ describe('discovery.resolve', function () {
     })
   })
 
+  it('shifts a consumed positional domain off argv._', function (done) {
+    var r = req(['example.com', 'a@b.com'])
+    run({}, r, function () {
+      r.argv._.should.eql(['a@b.com'])
+      done()
+    })
+  })
+
+  it('shifts a consumed path argument off argv._', function (done) {
+    dir('proj', { CNAME: 'from-cname.com\n' })
+    var r = req(['proj', '12345'])
+    run({}, r, function () {
+      r.argv._.should.eql(['12345'])
+      done()
+    })
+  })
+
+  it('leaves a trailing arg alone in extras mode and infers instead', function (done) {
+    fs.writeFileSync(path.join(tmp, 'CNAME'), 'cwd-cname.com\n')
+    var r = req(['12345'])
+    run({ extras: true }, r, function (err, res) {
+      res.should.eql({ domain: 'cwd-cname.com', source: 'cname' })
+      r.argv._.should.eql(['12345'])
+      done()
+    })
+  })
+
+  it('never reads an email as the domain', function (done) {
+    fs.writeFileSync(path.join(tmp, 'CNAME'), 'cwd-cname.com\n')
+    var r = req(['a@b.com'])
+    run({ extras: true }, r, function (err, res) {
+      res.should.eql({ domain: 'cwd-cname.com', source: 'cname' })
+      r.argv._.should.eql(['a@b.com'])
+      done()
+    })
+  })
+
+  it('picks up a --domain flag', function (done) {
+    var r = req([])
+    r.argv.domain = 'flagged.com'
+    run({}, r, function (err, res) {
+      res.should.eql({ domain: 'flagged.com', source: 'arg' })
+      done()
+    })
+  })
+
+  it('exposes local() for dispatchers', function (done) {
+    dir('proj', { CNAME: 'local-cname.com\n' })
+    should(discovery.local(path.join(tmp, 'proj'))).eql({ domain: 'local-cname.com', source: 'cname' })
+    should(discovery.local(tmp)).equal(null)
+    done()
+  })
+
   it('aborts when unresolved and prompting is off', function (done) {
     run({}, req([]), function (err, r) {
       r.aborted.should.match(/No domain found/)
