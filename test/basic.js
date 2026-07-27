@@ -89,7 +89,20 @@ describe("surge " + testid + " using " + user, function () {
       .run(surge + '--help')
       .code(0)
       .expect(function (result) {
-        should(result.stdout).match(/publish project to domain/)
+        should(result.stdout).match(/PUBLISHING/)
+        should(result.stdout).match(/SUB-COMMANDS/)
+        should(result.stdout).match(/<path>\s+\[<domain>\]/)
+        should(result.stdout).not.match(/ns1\.surge\.world/)
+      }).end(done)
+    })
+
+    it('should print dns usage and name servers for bare surge dns', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'dns')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/dns \[<domain>\] add <type> <name> <value>/)
+        should(result.stdout).match(/ns1\.surge\.world/)
       }).end(done)
     })
 
