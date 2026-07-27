@@ -66,6 +66,33 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    it('should reject an unknown command', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'tpyo')
+      .code(1)
+      .expect(function (result) {
+        should(result.stdout).match(/`tpyo` is not a surge command/)
+      }).end(done)
+    })
+
+    it('should point at the golden path when bare in a pipeline', function (done) {
+      nixt({ colors: false })
+      .run(surge.trim())
+      .code(1)
+      .expect(function (result) {
+        should(result.stderr).match(/surge requires a path/)
+      }).end(done)
+    })
+
+    it('should output help with --help even in a pipeline', function (done) {
+      nixt({ colors: false })
+      .run(surge + '--help')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/publish project to domain/)
+      }).end(done)
+    })
+
   })
 
   describe("wizards", function(){
@@ -76,7 +103,7 @@ describe("surge " + testid + " using " + user, function () {
     it('should create project', function (done) {
       nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
-      .run(surge)
+      .run(surge + 'publish')
       .on(/.*email:.*/).respond(user + '\n')
       .on(/.*password:.*/).respond(pass + '\n')
       .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
@@ -104,7 +131,7 @@ describe("surge " + testid + " using " + user, function () {
     it('should update project', function (done) {
       nixt(opts)
       .exec(surge + 'logout') // Logout before the test starts
-      .run(surge)
+      .run(surge + 'publish')
       .on(/.*email:.*/).respond(user + '\n')
       .on(/.*password:.*/).respond(pass + '\n')
       .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
@@ -240,7 +267,7 @@ describe("surge " + testid + " using " + user, function () {
 
     it('should create second project using session', function (done) {
       nixt(opts)
-      .run(surge)
+      .run(surge + 'publish')
       .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
       .on(/.*domain:.*/).respond(domain + "\n")
       .expect(function (result) {
@@ -262,7 +289,7 @@ describe("surge " + testid + " using " + user, function () {
 
     it('should update project', function (done) {
       nixt(opts)
-      .run(surge)
+      .run(surge + 'publish')
       .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
       .on(/.*domain:.*/).respond(domain + "\n")
       .expect(function (result) {
@@ -270,6 +297,15 @@ describe("surge " + testid + " using " + user, function () {
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
         resultedDomain = result.stdout.split('Success! - Published to')[1].trim().split(/\s+/)[0]
         resultedDomain.should.equal(domain)
+      }).end(done)
+    })
+
+    it('should publish the cwd when given only a domain', function (done) {
+      nixt(opts)
+      .cwd(path.join(__dirname, 'fixtures', 'projects', 'hello-world'))
+      .run('node ' + path.resolve(pkg.bin) + endpoint + domain)
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp("Success! - Published to " + domain))
       }).end(done)
     })
 
