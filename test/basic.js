@@ -472,14 +472,23 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
-    it('should publish the cwd via surge <domain> publish', function (done) {
+    it('should publish the cwd via the pair', function (done) {
       var dir = makeProject()
       nixt(opts)
       .cwd(dir)
-      .run('node ' + path.resolve(pkg.bin) + endpoint + domain + ' publish')
+      .run('node ' + path.resolve(pkg.bin) + endpoint + '. ' + domain)
       .expect(function (result) {
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
         fs.readFileSync(path.join(dir, 'CNAME'), 'utf8').should.equal(domain + '\n')
+      }).end(done)
+    })
+
+    it('should refuse publish against a domain target', function (done) {
+      nixt({ colors: false })
+      .run(surge + domain + ' publish')
+      .code(1)
+      .expect(function (result) {
+        should(result.stdout).match(/publish takes a path/)
       }).end(done)
     })
 
