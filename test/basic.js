@@ -77,6 +77,33 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    it('should point plus at account plans', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'plus')
+      .code(1)
+      .expect(function (result) {
+        should(result.stdout).match(/Plus plan is legacy/)
+        should(result.stdout).match(/surge plan/)
+      }).end(done)
+    })
+
+    it('should no longer know select', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'select')
+      .code(1)
+      .expect(function (result) {
+        should(result.stdout).match(/`select` is not a surge command/)
+      }).end(done)
+    })
+
+    it('should nudge old command forms at their new home', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'whoami')
+      .expect(function (result) {
+        should(result.stdout).match(/`surge whoami` is now `surge account whoami`/)
+      }).end(done)
+    })
+
     it('should reject an unknown command', function (done) {
       nixt({ colors: false })
       .run(surge + 'tpyo')
