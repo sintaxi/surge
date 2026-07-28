@@ -555,6 +555,15 @@ describe("surge " + testid + " using " + user, function () {
         }).end(done)
     })
 
+    it('should render traffic as the bare stats read', function (done) {
+      nixt(opts)
+        .run(surge + 'stats ' + customDomain)
+        .expect(function (result) {
+          should(result.stdout).match(/TRAFFIC/i)
+          should(result.stdout).not.match(/Error/)
+        }).end(done)
+    })
+
     it('should reach status as an explicit debug verb', function (done) {
       nixt(opts)
         .run(surge + 'debug ' + customDomain + ' status')
