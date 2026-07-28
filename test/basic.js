@@ -392,7 +392,8 @@ describe("surge " + testid + " using " + user, function () {
       .run('node ' + path.resolve(pkg.bin) + endpoint + 'debug')
       .code(0)
       .expect(function (result) {
-        should(result.stdout).match(new RegExp('debug ' + domain + ' status'))
+        should(result.stdout).match(new RegExp(domain + ' \\(CNAME found\\)'))
+        should(result.stdout).match(/debug status/)
         should(result.stdout).not.match(/\[<domain>\]/)
       }).end(done)
     })
