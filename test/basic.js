@@ -113,7 +113,7 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
-    it('should print debug usage for bare surge debug outside a project', function (done) {
+    it('should print debug usage for bare surge debug', function (done) {
       nixt({ colors: false })
       .run(surge + 'debug')
       .code(0)
@@ -366,12 +366,13 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
-    it('should show the account panel for bare surge account', function (done) {
+    it('should print account usage for bare surge account', function (done) {
       nixt(opts)
       .run(surge + 'account')
+      .code(0)
       .expect(function (result) {
-        should(result.stdout).match(new RegExp(user))
-        should(result.stdout).match(/plan:/)
+        should(result.stdout).match(/account whoami/)
+        should(result.stdout).match(/account nuke/)
       }).end(done)
     })
 
@@ -383,12 +384,12 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
-    it('should infer the domain from a CNAME for debug', function (done) {
+    it('should infer the domain from a CNAME for debug status', function (done) {
       var proj = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-cname-'))
       fs.writeFileSync(path.join(proj, 'CNAME'), domain + '\n')
       nixt(opts)
       .cwd(proj)
-      .run('node ' + path.resolve(pkg.bin) + endpoint + 'debug')
+      .run('node ' + path.resolve(pkg.bin) + endpoint + 'debug status')
       .expect(function (result) {
         should(result.stdout).match(new RegExp(subdomain))
       }).end(done)
@@ -469,7 +470,7 @@ describe("surge " + testid + " using " + user, function () {
 
     it('should list the scoped token by id without exposing the value', function (done) {
       nixt(opts)
-        .run(surge + 'tokens')
+        .run(surge + 'tokens all')
         .expect(function (result) {
           should(scopedToken).be.ok()
           should(result.stdout).match(new RegExp("tok-" + scopedToken.slice(0, 8)))
