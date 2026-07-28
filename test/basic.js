@@ -171,13 +171,15 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
-    it('should refuse a passed path that is not a surge project', function (done) {
+    it('should note a non-project path in help instead of aborting', function (done) {
       var proj = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-help-'))
       nixt({ colors: false })
       .run(surge + proj + ' --help')
-      .code(1)
+      .code(0)
       .expect(function (result) {
-        should(result.stdout).match(/is not a surge project/)
+        should(result.stdout).match(/not a surge project yet/)
+        should(result.stdout).match(new RegExp(proj.replace(/[/\\]/g, '.') + ' publish'))
+        should(result.stdout).not.match(/CNAME found/)
       }).end(done)
     })
 
