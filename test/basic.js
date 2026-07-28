@@ -403,7 +403,7 @@ describe("surge " + testid + " using " + user, function () {
   describe("session", function(){
     var subdomain = testid + "-two"
     var domain = subdomain + ".surge.sh"
-    var resultedDomain
+    var resultedDomain, generatedDomain
     var proj = makeProject()
 
     it('login', function (done) {
@@ -504,6 +504,37 @@ describe("surge " + testid + " using " + user, function () {
       .expect(function (result) {
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
         fs.readFileSync(path.join(dir, 'CNAME'), 'utf8').should.equal(domain + '\n')
+      }).end(done)
+    })
+
+    it('should publish to a generated domain via _ with no prompt', function (done) {
+      var dir = makeProject()
+      nixt(opts)
+      .cwd(dir)
+      .run('node ' + path.resolve(pkg.bin) + endpoint + '. _')
+      .expect(function (result) {
+        should(result.stdout).match(/Success! - Published to [a-z0-9-]+\.surge\.sh/)
+        generatedDomain = result.stdout.match(/Published to ([a-z0-9-]+\.surge\.sh)/)[1]
+        fs.readFileSync(path.join(dir, 'CNAME'), 'utf8').should.equal(generatedDomain + '\n')
+      }).end(done)
+    })
+
+    it('should teardown the generated domain', function (done) {
+      nixt(opts)
+      .run(surge + generatedDomain + ' teardown')
+      .expect(function (result) {
+        should(result.stdout).match(/has been removed/)
+      }).end(done)
+    })
+
+    it('should publish through the deploy alias', function (done) {
+      var dir = makeProject()
+      fs.writeFileSync(path.join(dir, 'CNAME'), domain + '\n')
+      nixt(opts)
+      .cwd(dir)
+      .run('node ' + path.resolve(pkg.bin) + endpoint + '. deploy')
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp("Success! - Published to " + domain))
       }).end(done)
     })
 
