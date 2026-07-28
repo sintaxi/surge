@@ -384,6 +384,19 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    it('should render bare debug usage against the local CNAME domain', function (done) {
+      var proj = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-cname-'))
+      fs.writeFileSync(path.join(proj, 'CNAME'), domain + '\n')
+      nixt(opts)
+      .cwd(proj)
+      .run('node ' + path.resolve(pkg.bin) + endpoint + 'debug')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp('debug ' + domain + ' status'))
+        should(result.stdout).not.match(/\[<domain>\]/)
+      }).end(done)
+    })
+
     it('should infer the domain from a CNAME for debug status', function (done) {
       var proj = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-cname-'))
       fs.writeFileSync(path.join(proj, 'CNAME'), domain + '\n')
