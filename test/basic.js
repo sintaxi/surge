@@ -104,6 +104,30 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    it('should let a valid domain beat a same-named directory in help', function (done) {
+      var dir = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-shadow-'))
+      fs.mkdirSync(path.join(dir, 'shadow.example.com'))
+      nixt({ colors: false })
+      .cwd(dir)
+      .run('node ' + path.resolve(pkg.bin) + endpoint + 'shadow.example.com --help')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/shadow\.example\.com \(given\)/)
+        should(result.stdout).not.match(/not a surge project/)
+      }).end(done)
+    })
+
+    it('should say no such directory for a missing path target', function (done) {
+      nixt({ colors: false })
+      .run(surge + './missing-dir-xyz --help')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/no such directory/)
+        should(result.stdout).match(/<path> <domain>/)
+        should(result.stdout).not.match(/COMMANDS/)
+      }).end(done)
+    })
+
     it('should reject an unknown command', function (done) {
       nixt({ colors: false })
       .run(surge + 'tpyo')
@@ -193,7 +217,7 @@ describe("surge " + testid + " using " + user, function () {
       .code(1)
       .expect(function (result) {
         should(result.stderr).match(/nothing to do/)
-        should(result.stderr).match(/verbless-target\.example\.com publish/)
+        should(result.stderr).match(/<path> verbless-target\.example\.com/)
       }).end(done)
     })
 
