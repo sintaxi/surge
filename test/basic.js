@@ -27,6 +27,17 @@ var user = "brock"+ testid + "@chloi.io"
 // domain, or email — the publish tests assert it is not echoed in output
 var pass = "pw-" + require('crypto').randomBytes(12).toString('hex')
 
+// publishes write a CNAME into the project, so every publish test works
+// on a throwaway copy of the fixture — never the git-tracked original
+var fixture = path.join(__dirname, 'fixtures', 'projects', 'hello-world')
+var makeProject = function () {
+  var dir = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-proj-'))
+  fs.readdirSync(fixture).forEach(function (f) {
+    fs.copyFileSync(path.join(fixture, f), path.join(dir, f))
+  })
+  return dir
+}
+
 describe("surge " + testid + " using " + user, function () {
 
   describe ("prepare", function(){
@@ -122,6 +133,7 @@ describe("surge " + testid + " using " + user, function () {
     var subdomain = testid + "-one"
     var domain = subdomain + ".surge.sh"
     var resultedDomain
+    var proj = makeProject()
 
     it('should create project', function (done) {
       nixt(opts)
@@ -129,11 +141,13 @@ describe("surge " + testid + " using " + user, function () {
       .run(surge + 'publish')
       .on(/.*email:.*/).respond(user + '\n')
       .on(/.*password:.*/).respond(pass + '\n')
-      .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
+      .on(/.*project:.*/).respond(proj + '\n')
       .on(/.*domain:.*/).respond(domain + "\n")
       .expect(function (result) {
         should(result.stdout).not.match(new RegExp(pass))
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
+        should(result.stdout).match(/domain written to/)
+        fs.readFileSync(path.join(proj, 'CNAME'), 'utf8').should.equal(domain + '\n')
         resultedDomain = result.stdout.split('Success! - Published to')[1].trim().split(/\s+/)[0]
         resultedDomain.should.equal(domain)
       }).end(done)
@@ -157,10 +171,11 @@ describe("surge " + testid + " using " + user, function () {
       .run(surge + 'publish')
       .on(/.*email:.*/).respond(user + '\n')
       .on(/.*password:.*/).respond(pass + '\n')
-      .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
+      .on(/.*project:.*/).respond(proj + '\n')
       .on(/.*domain:.*/).respond(domain + "\n")
       .expect(function (result) {
         should(result.stdout).not.match(new RegExp(pass))
+        should(result.stdout).not.match(/domain written to/)
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
         resultedDomain = result.stdout.split('Success! - Published to')[1].trim().split(/\s+/)[0]
         resultedDomain.should.equal(domain)
@@ -275,6 +290,7 @@ describe("surge " + testid + " using " + user, function () {
     var subdomain = testid + "-two"
     var domain = subdomain + ".surge.sh"
     var resultedDomain
+    var proj = makeProject()
 
     it('login', function (done) {
       nixt({ colors: false })
@@ -291,7 +307,7 @@ describe("surge " + testid + " using " + user, function () {
     it('should create second project using session', function (done) {
       nixt(opts)
       .run(surge + 'publish')
-      .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
+      .on(/.*project:.*/).respond(proj + '\n')
       .on(/.*domain:.*/).respond(domain + "\n")
       .expect(function (result) {
         should(result.stdout).not.match(new RegExp(pass))
@@ -313,7 +329,7 @@ describe("surge " + testid + " using " + user, function () {
     it('should update project', function (done) {
       nixt(opts)
       .run(surge + 'publish')
-      .on(/.*project:.*/).respond('./test/fixtures/projects/hello-world\n')
+      .on(/.*project:.*/).respond(proj + '\n')
       .on(/.*domain:.*/).respond(domain + "\n")
       .expect(function (result) {
         should(result.stdout).not.match(new RegExp(pass))
@@ -352,11 +368,13 @@ describe("surge " + testid + " using " + user, function () {
     })
 
     it('should publish the cwd when given only a domain', function (done) {
+      var dir = makeProject()
       nixt(opts)
-      .cwd(path.join(__dirname, 'fixtures', 'projects', 'hello-world'))
+      .cwd(dir)
       .run('node ' + path.resolve(pkg.bin) + endpoint + domain)
       .expect(function (result) {
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
+        fs.readFileSync(path.join(dir, 'CNAME'), 'utf8').should.equal(domain + '\n')
       }).end(done)
     })
 
@@ -410,6 +428,7 @@ describe("surge " + testid + " using " + user, function () {
     var otherDomain = testid + "-other.surge.sh"
     var netrcPath = path.join(process.env.HOME, '.netrc')
     var loginNetrc, scopedToken
+    var proj = makeProject()
 
     it('should mint a token scoped to the domain', function (done) {
       nixt(opts)
@@ -439,7 +458,7 @@ describe("surge " + testid + " using " + user, function () {
       loginNetrc = fs.readFileSync(netrcPath, 'utf-8')
       fs.writeFileSync(netrcPath, loginNetrc.replace(/password .*/, 'password ' + scopedToken))
       nixt(opts)
-        .run(surge + './test/fixtures/projects/hello-world ' + domain)
+        .run(surge + proj + ' ' + domain)
         .expect(function (result) {
           should(result.stdout).not.match(/email:/)
           should(result.stdout).match(new RegExp("Success! - Published to " + domain))
@@ -448,7 +467,7 @@ describe("surge " + testid + " using " + user, function () {
 
     it('should not publish out of scope', function (done) {
       nixt(opts)
-        .run(surge + './test/fixtures/projects/hello-world ' + otherDomain)
+        .run(surge + proj + ' ' + otherDomain)
         .expect(function (result) {
           should(result.stdout).match(/do not have permission/)
           should(result.stdout).not.match(/Success/)
@@ -475,6 +494,7 @@ describe("surge " + testid + " using " + user, function () {
 
   describe('status', function () {
     var customDomain = testid + "-status.lvh.me"
+    var proj = makeProject()
 
     it('should refuse status for an unpublished domain', function (done) {
       nixt(opts)
@@ -489,7 +509,7 @@ describe("surge " + testid + " using " + user, function () {
 
     it('should carry the unpointed-domain state in the verdicts box plus one cta line', function (done) {
       nixt(opts)
-        .run(surge + './test/fixtures/projects/hello-world ' + customDomain)
+        .run(surge + proj + ' ' + customDomain)
         .expect(function (result) {
           should(result.stdout).match(new RegExp("Success! - Published to " + customDomain))
           should(result.stdout).match(/not resolving to Surge/)
@@ -529,7 +549,7 @@ describe("surge " + testid + " using " + user, function () {
     it('should report geo-aware dns in the table for a platform subdomain publish', function (done) {
       var domain = testid + "-quiet.surge.sh"
       nixt(opts)
-        .run(surge + './test/fixtures/projects/hello-world ' + domain)
+        .run(surge + proj + ' ' + domain)
         .expect(function (result) {
           should(result.stdout).match(new RegExp("Success! - Published to " + domain))
           should(result.stdout).match(/using Surge Name Servers/)
