@@ -118,8 +118,8 @@ describe("surge " + testid + " using " + user, function () {
       .run(surge + 'debug')
       .code(0)
       .expect(function (result) {
-        should(result.stdout).match(/debug \[<domain>\] status/)
-        should(result.stdout).match(/debug \[<domain>\] encrypt/)
+        should(result.stdout).match(/<proj> debug status/)
+        should(result.stdout).match(/<proj> debug encrypt/)
       }).end(done)
     })
 
@@ -137,9 +137,11 @@ describe("surge " + testid + " using " + user, function () {
       .run(surge + '--help')
       .code(0)
       .expect(function (result) {
-        should(result.stdout).match(/PUBLISHING/)
-        should(result.stdout).match(/SUB-COMMANDS/)
-        should(result.stdout).match(/<path>\s+\[<domain>\]/)
+        should(result.stdout).match(/PUBLISH/)
+        should(result.stdout).match(/COMMANDS/)
+        should(result.stdout).match(/ADMIN/)
+        should(result.stdout).match(/<path> <domain>/)
+        should(result.stdout).match(/where <proj> can be the <domain>, <path>, or <cwd>/)
         should(result.stdout).not.match(/ns1\.surge\.world/)
       }).end(done)
     })
@@ -169,14 +171,23 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
-    it('should not read cwd context when a passed path resolves nothing', function (done) {
+    it('should refuse a passed path that is not a surge project', function (done) {
       var proj = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-help-'))
       nixt({ colors: false })
       .run(surge + proj + ' --help')
-      .code(0)
+      .code(1)
       .expect(function (result) {
-        should(result.stdout).match(/\[<domain>\]/)
-        should(result.stdout).not.match(/CNAME found/)
+        should(result.stdout).match(/is not a surge project/)
+      }).end(done)
+    })
+
+    it('should error loudly for a verbless target in a pipeline', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'verbless-target.example.com')
+      .code(1)
+      .expect(function (result) {
+        should(result.stderr).match(/nothing to do/)
+        should(result.stderr).match(/verbless-target\.example\.com publish/)
       }).end(done)
     })
 
@@ -186,7 +197,7 @@ describe("surge " + testid + " using " + user, function () {
       .run(surge + 'dns ' + proj + ' all')
       .code(1)
       .expect(function (result) {
-        should(result.stdout).match(/No CNAME found in /)
+        should(result.stdout).match(/is not a surge project/)
       }).end(done)
     })
 
@@ -195,7 +206,7 @@ describe("surge " + testid + " using " + user, function () {
       .run(surge + 'dns')
       .code(0)
       .expect(function (result) {
-        should(result.stdout).match(/dns \[<domain>\] add <type> <name> <value>/)
+        should(result.stdout).match(/<proj> dns add <type> <name> <value>/)
         should(result.stdout).match(/ns1\.surge\.world/)
       }).end(done)
     })
@@ -455,11 +466,11 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
-    it('should publish the cwd when given only a domain', function (done) {
+    it('should publish the cwd via surge <domain> publish', function (done) {
       var dir = makeProject()
       nixt(opts)
       .cwd(dir)
-      .run('node ' + path.resolve(pkg.bin) + endpoint + domain)
+      .run('node ' + path.resolve(pkg.bin) + endpoint + domain + ' publish')
       .expect(function (result) {
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
         fs.readFileSync(path.join(dir, 'CNAME'), 'utf8').should.equal(domain + '\n')
@@ -608,24 +619,34 @@ describe("surge " + testid + " using " + user, function () {
         }).end(done)
     })
 
-    it('should reach status through the debug namespace', function (done) {
+    it('should reach status target-first', function (done) {
       nixt(opts)
-        .run(surge + 'debug ' + customDomain)
+        .run(surge + customDomain + ' debug status')
         .expect(function (result) {
           should(result.stdout).match(/waiting on dns/)
         }).end(done)
     })
 
-    it('should render traffic as the bare stats read', function (done) {
+    it('should show debug usage for a verbless target noun', function (done) {
       nixt(opts)
-        .run(surge + 'stats ' + customDomain)
+        .run(surge + customDomain + ' debug')
+        .code(0)
+        .expect(function (result) {
+          should(result.stdout).match(new RegExp(customDomain + ' debug status'))
+          should(result.stdout).not.match(/waiting on dns/)
+        }).end(done)
+    })
+
+    it('should render traffic target-first', function (done) {
+      nixt(opts)
+        .run(surge + customDomain + ' stats traffic')
         .expect(function (result) {
           should(result.stdout).match(/TRAFFIC/i)
           should(result.stdout).not.match(/Error/)
         }).end(done)
     })
 
-    it('should reach status as an explicit debug verb', function (done) {
+    it('should reach status through the legacy verb-first order', function (done) {
       nixt(opts)
         .run(surge + 'debug ' + customDomain + ' status')
         .expect(function (result) {
