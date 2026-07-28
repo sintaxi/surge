@@ -144,6 +144,19 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    it('should render contextual help inside a project', function (done) {
+      var proj = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-help-'))
+      fs.writeFileSync(path.join(proj, 'CNAME'), 'ctx-help.example.com\n')
+      nixt({ colors: false })
+      .cwd(proj)
+      .run('node ' + path.resolve(pkg.bin) + endpoint + '--help')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/ctx-help\.example\.com \(CNAME found\)/)
+        should(result.stdout).not.match(/\[<domain>\]/)
+      }).end(done)
+    })
+
     it('should print dns usage and name servers for bare surge dns', function (done) {
       nixt({ colors: false })
       .run(surge + 'dns')
