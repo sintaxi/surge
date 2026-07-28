@@ -179,6 +179,10 @@ describe("surge " + testid + " using " + user, function () {
       .expect(function (result) {
         should(result.stdout).match(/not a surge project yet/)
         should(result.stdout).match(new RegExp(proj.replace(/[/\\]/g, '.') + ' publish'))
+        should(result.stdout).match(new RegExp(proj.replace(/[/\\]/g, '.') + ' <domain>'))
+        should(result.stdout).match(/ADMIN/)
+        should(result.stdout).not.match(/COMMANDS/)
+        should(result.stdout).not.match(/rollback/)
         should(result.stdout).not.match(/CNAME found/)
       }).end(done)
     })
