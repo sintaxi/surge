@@ -157,6 +157,39 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    it('should render contextual help for a passed project path', function (done) {
+      var proj = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-help-'))
+      fs.writeFileSync(path.join(proj, 'CNAME'), 'ctx-path.example.com\n')
+      nixt({ colors: false })
+      .run(surge + proj + ' --help')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/ctx-path\.example\.com \(CNAME found in /)
+        should(result.stdout).not.match(/\[<domain>\]/)
+      }).end(done)
+    })
+
+    it('should not read cwd context when a passed path resolves nothing', function (done) {
+      var proj = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-help-'))
+      nixt({ colors: false })
+      .run(surge + proj + ' --help')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/\[<domain>\]/)
+        should(result.stdout).not.match(/CNAME found/)
+      }).end(done)
+    })
+
+    it('should refuse a dns path with no CNAME', function (done) {
+      var proj = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-dns-'))
+      nixt({ colors: false })
+      .run(surge + 'dns ' + proj + ' all')
+      .code(1)
+      .expect(function (result) {
+        should(result.stdout).match(/No CNAME found in /)
+      }).end(done)
+    })
+
     it('should print dns usage and name servers for bare surge dns', function (done) {
       nixt({ colors: false })
       .run(surge + 'dns')
