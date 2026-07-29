@@ -47,10 +47,18 @@ the directory you are standing in:
     surge rollback
     surge revs
     surge stats traffic
-    surge publish
 
 That is the whole grammar. `<project>` is a **path**, a **domain**, or — if
 you leave it out — the **current directory**.
+
+Publishing is the one place worth naming the directory explicitly, even when
+it is the one you are standing in:
+
+    surge . publish
+
+It is the command that changes what the world sees, so it prefers to be told
+exactly what to send. (`surge publish` on its own still walks you through it,
+the way it always has.)
 
 ## Commands
 
