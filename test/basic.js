@@ -224,7 +224,7 @@ describe("surge " + testid + " using " + user, function () {
     it('should refuse a dns path with no CNAME', function (done) {
       var proj = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-dns-'))
       nixt({ colors: false })
-      .run(surge + 'dns ' + proj + ' all')
+      .run(surge + 'dns ' + proj + ' list')
       .code(1)
       .expect(function (result) {
         should(result.stdout).match(/is not a surge project/)
@@ -611,7 +611,7 @@ describe("surge " + testid + " using " + user, function () {
 
     it('should list the scoped token by id without exposing the value', function (done) {
       nixt(opts)
-        .run(surge + 'tokens all')
+        .run(surge + 'tokens list')
         .expect(function (result) {
           should(scopedToken).be.ok()
           should(result.stdout).match(new RegExp("tok-" + scopedToken.slice(0, 8)))
@@ -649,6 +649,14 @@ describe("surge " + testid + " using " + user, function () {
         .run(surge + 'teardown ' + domain)
         .expect(function (result) {
           should(result.stdout).match(/has been removed/)
+        }).end(done)
+    })
+
+    it('should still list through the all alias', function (done) {
+      nixt(opts)
+        .run(surge + 'tokens all')
+        .expect(function (result) {
+          should(result.stdout).match(new RegExp("tok-" + scopedToken.slice(0, 8)))
         }).end(done)
     })
 
