@@ -538,6 +538,60 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    // 0.40.0 regressed these: a path target with publish-intent flags
+    // fell through to the verbless overview instead of publishing
+    it('should publish a path target with a -d domain flag', function (done) {
+      var dir = makeProject()
+      nixt(opts)
+      .run(surge + dir + ' -d ' + domain)
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp("Success! - Published to " + domain))
+      }).end(done)
+    })
+
+    it('should publish a path target with a --domain flag', function (done) {
+      var dir = makeProject()
+      nixt(opts)
+      .run(surge + dir + ' --domain ' + domain)
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp("Success! - Published to " + domain))
+      }).end(done)
+    })
+
+    it('should preview-publish a path target with --preview', function (done) {
+      var dir = makeProject()
+      fs.writeFileSync(path.join(dir, 'CNAME'), domain + '\n')
+      nixt(opts)
+      .run(surge + dir + ' --preview')
+      .expect(function (result) {
+        should(result.stdout).match(/available at [0-9]+-/)
+        should(result.stdout).not.match(/nothing to do/)
+      }).end(done)
+    })
+
+    // flags with no -p still prompt for the project, as they always have
+    it('should route to publish from publish flags alone', function (done) {
+      var dir = makeProject()
+      fs.writeFileSync(path.join(dir, 'CNAME'), domain + '\n')
+      nixt(opts)
+      .cwd(dir)
+      .run('node ' + path.resolve(pkg.bin) + endpoint + '-m flags-only')
+      .on(/.*project:.*/).respond(dir + '\n')
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp("Success! - Published to " + domain))
+        should(result.stdout).not.match(/requires a path/)
+      }).end(done)
+    })
+
+    it('should still catch a bad flag on a path target', function (done) {
+      nixt({ colors: false })
+      .run(surge + '. --badflag')
+      .code(1)
+      .expect(function (result) {
+        should(result.stdout).match(/`badflag` is not a surge argument/)
+      }).end(done)
+    })
+
     it('should refuse publish against a domain target', function (done) {
       nixt({ colors: false })
       .run(surge + domain + ' publish')
