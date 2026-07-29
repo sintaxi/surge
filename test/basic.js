@@ -583,6 +583,28 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    // Doug Donohoe's CI form: flag before the path, and the failed-build
+    // case where the directory does not exist yet
+    it('should publish with the domain flag before the path', function (done) {
+      var dir = makeProject()
+      nixt(opts)
+      .run(surge + '--domain ' + domain + ' ' + dir)
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp("Success! - Published to " + domain))
+        should(result.stdout).not.match(/nothing to do/)
+      }).end(done)
+    })
+
+    it('should report a missing project dir as missing, not a bad command', function (done) {
+      nixt({ colors: false })
+      .run(surge + '--domain ' + domain + ' export/missing')
+      .code(1)
+      .expect(function (result) {
+        should(result.stdout).match(/No such file or directory/)
+        should(result.stdout).not.match(/is not a surge command/)
+      }).end(done)
+    })
+
     it('should still catch a bad flag on a path target', function (done) {
       nixt({ colors: false })
       .run(surge + '. --badflag')
