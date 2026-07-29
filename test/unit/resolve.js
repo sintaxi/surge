@@ -249,6 +249,36 @@ describe('discovery.resolve', function () {
     })
   })
 
+  it('suggests the project directory name as the subdomain', function (done) {
+    var d = dir('coolapp')
+    var suggested
+    helpers.read = function (opts, cb) { suggested = opts.default; cb(null, 'typed.com') }
+    run({ prompt: true, generate: true }, req([], { project: d }), function () {
+      suggested.should.equal('coolapp.surge.sh')
+      done()
+    })
+  })
+
+  it('climbs out of a build-output dir to the project name', function (done) {
+    var d = dir('coolapp/dist')
+    var suggested
+    helpers.read = function (opts, cb) { suggested = opts.default; cb(null, 'typed.com') }
+    run({ prompt: true, generate: true }, req([], { project: d }), function () {
+      suggested.should.equal('coolapp.surge.sh')
+      done()
+    })
+  })
+
+  it('slugifies awkward directory names', function (done) {
+    var d = dir('My App!')
+    var suggested
+    helpers.read = function (opts, cb) { suggested = opts.default; cb(null, 'typed.com') }
+    run({ prompt: true, generate: true }, req([], { project: d }), function () {
+      suggested.should.equal('my-app.surge.sh')
+      done()
+    })
+  })
+
   it('re-prompts until the domain is valid', function (done) {
     var answers = ['not a domain', 'valid.com']
     helpers.read = function (opts, cb) { cb(null, answers.shift()) }
