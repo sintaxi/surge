@@ -48,7 +48,7 @@
   },
   "license": "ISC",
   "engines": {
-    "node": ">=18"
+    "node": ">=18.13"
   },
   "main": "./lib/surge.js",
   "ignore": [
