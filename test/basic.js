@@ -104,6 +104,34 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    // the nudge is told apart by a subcommand, not a target. quoting bare
+    // `surge token` would aim a read (print the token in use) at a mint.
+    // --help so the nudge is asserted on routing alone: no network, and no
+    // way for a passing test to leave a real token behind
+    it('should quote the subcommand when nudging token add', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'token add --help')
+      .expect(function (result) {
+        should(result.stdout).match(/`surge token add` is now `surge tokens add`/)
+      }).end(done)
+    })
+
+    it('should quote the subcommand when nudging token rem', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'token rem tok-1a2b3c4d --help')
+      .expect(function (result) {
+        should(result.stdout).match(/`surge token rem` is now `surge tokens rem`/)
+      }).end(done)
+    })
+
+    it('should leave bare `surge token` unnudged - it has not moved', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'token --help')
+      .expect(function (result) {
+        should(result.stdout).not.match(/is now/)
+      }).end(done)
+    })
+
     it('should let a valid domain beat a same-named directory in help', function (done) {
       var dir = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-shadow-'))
       fs.mkdirSync(path.join(dir, 'shadow.example.com'))
