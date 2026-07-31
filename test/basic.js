@@ -170,7 +170,7 @@ describe("surge " + testid + " using " + user, function () {
       .expect(function (result) {
         should(result.stdout).match(/no such directory/)
         should(result.stdout).match(/<path> <domain>/)
-        should(result.stdout).not.match(/COMMANDS/)
+        should(result.stdout).not.match(/PROJECT/)
       }).end(done)
     })
 
@@ -188,8 +188,8 @@ describe("surge " + testid + " using " + user, function () {
       .run(surge + 'debug')
       .code(0)
       .expect(function (result) {
-        should(result.stdout).match(/<proj> debug status/)
-        should(result.stdout).match(/<proj> debug encrypt/)
+        should(result.stdout).match(/<domain> debug status/)
+        should(result.stdout).match(/<domain> debug encrypt/)
       }).end(done)
     })
 
@@ -207,11 +207,16 @@ describe("surge " + testid + " using " + user, function () {
       .run(surge + '--help')
       .code(0)
       .expect(function (result) {
-        should(result.stdout).match(/PUBLISH/)
-        should(result.stdout).match(/COMMANDS/)
+        should(result.stdout).match(/PUBLISHING/)
+        should(result.stdout).match(/PROJECT/)
         should(result.stdout).match(/ADMIN/)
         should(result.stdout).match(/<path> <domain>/)
-        should(result.stdout).match(/where <proj> can be the <domain>, <path>, or <cwd>/)
+        should(result.stdout).match(/<domain> config/)
+        // the money path stays discoverable from the help screen
+        should(result.stdout).match(/surge plan/)
+        should(result.stdout).match(/surge card/)
+        // the path form is a power-user affordance, not a help line
+        should(result.stdout).not.match(/<proj>/)
         should(result.stdout).not.match(/ns1\.surge\.world/)
       }).end(done)
     })
@@ -282,7 +287,7 @@ describe("surge " + testid + " using " + user, function () {
       .run(surge + 'dns')
       .code(0)
       .expect(function (result) {
-        should(result.stdout).match(/<proj> dns add <type> <name> <value>/)
+        should(result.stdout).match(/<domain> dns add <type> <name> <value>/)
         should(result.stdout).match(/ns1\.surge\.world/)
       }).end(done)
     })
