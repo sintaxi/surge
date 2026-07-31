@@ -73,16 +73,17 @@ you leave it out — the **current directory**.
       surge <project> stats <cmd>     traffic·load·audience·usage
 
     ADMIN
-      surge list
-      surge account <cmd>             whoami·login·logout·verify·card·plan·nuke
+      surge <cmd>                     list·whoami·login·logout·verify·card·plan·nuke
       surge tokens  <cmd>             list·add·rem
 
 Run `surge --help` inside a project and the help fills itself in with your
 domain and your paths, so every line is a command you can copy and run.
 
-Related commands are now grouped under a noun. Run the noun on its own to see
-what it offers — `surge debug`, `surge dns`, `surge stats`, `surge account`,
-`surge tokens`. Nothing is hidden behind documentation.
+Commands that act on a project are grouped under a noun. Run the noun on its
+own to see what it offers — `surge debug`, `surge dns`, `surge stats`,
+`surge tokens`. Nothing is hidden behind documentation. The commands that act
+on **you** rather than on a project — `whoami`, `login`, `logout`, `verify`,
+`card`, `plan`, `nuke` — stay where they have always been, at the top level.
 
 ## Also new
 
@@ -107,7 +108,6 @@ grey line pointing at it and then does the work:
     surge teardown example.com      →  surge example.com teardown
     surge status example.com        →  surge example.com debug status
     surge traffic example.com       →  surge example.com stats traffic
-    surge whoami                    →  surge account whoami
 
 Flags are unchanged: `--domain`/`-d`, `--project`/`-p`, `--preview`,
 `--message`/`-m`, `SURGE_TOKEN`, and the rest behave exactly as before, in any

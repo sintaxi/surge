@@ -98,9 +98,27 @@ describe("surge " + testid + " using " + user, function () {
 
     it('should nudge old command forms at their new home', function (done) {
       nixt({ colors: false })
-      .run(surge + 'whoami')
+      .run(surge + 'status --help')
       .expect(function (result) {
-        should(result.stdout).match(/`surge whoami` is now `surge account whoami`/)
+        should(result.stdout).match(/`surge status` is now `surge debug status`/)
+      }).end(done)
+    })
+
+    // identity verbs are flat - they have no target for a namespace to
+    // group them under. both spellings work; neither nudges the other
+    it('should leave the identity verbs flat and unnudged', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'whoami --help')
+      .expect(function (result) {
+        should(result.stdout).not.match(/is now/)
+      }).end(done)
+    })
+
+    it('should keep `surge account <verb>` working as a silent alias', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'account whoami --help')
+      .expect(function (result) {
+        should(result.stdout).not.match(/is now/)
       }).end(done)
     })
 
@@ -481,13 +499,16 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    // bare `surge account` still answers, but the identity verbs are flat
+    // now, so the screen teaches `surge whoami`, not `surge account whoami`
     it('should print account usage for bare surge account', function (done) {
       nixt(opts)
       .run(surge + 'account')
       .code(0)
       .expect(function (result) {
-        should(result.stdout).match(/account whoami/)
-        should(result.stdout).match(/account nuke/)
+        should(result.stdout).match(/surge whoami/)
+        should(result.stdout).match(/surge nuke/)
+        should(result.stdout).not.match(/surge account whoami/)
       }).end(done)
     })
 
