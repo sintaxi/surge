@@ -61,6 +61,15 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    it('should refuse --private and --public together', function (done) {
+      nixt({ colors: false })
+      .run(surge + '--private --public')
+      .code(1)
+      .expect(function (result) {
+        should(result.stdout).match(/use `--private` or `--public`, not both/)
+      }).end(done)
+    })
+
     it('should return version when --version is used', function (done) {
       nixt(opts)
       .run(surge + '--version')
