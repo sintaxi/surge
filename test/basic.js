@@ -105,59 +105,33 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
-    it('should nudge old command forms at their new home', function (done) {
-      nixt({ colors: false })
-      .run(surge + 'status --help')
-      .expect(function (result) {
-        should(result.stdout).match(/`surge status` is now `surge debug status`/)
-      }).end(done)
-    })
+    // both grammars are first-class. the verb-first, flat, and namespaced
+    // spellings all dispatch silently - no nudge, no abort. --help so
+    // routing is asserted alone: no network, nothing left behind.
+    var silent = function(form){
+      return function(done){
+        nixt({ colors: false })
+        .run(surge + form + ' --help')
+        .code(0)
+        .expect(function (result) {
+          should(result.stdout).match(/PUBLISHING/)
+          should(result.stdout).not.match(/is now/)
+          should(result.stdout).not.match(/Aborted/)
+        }).end(done)
+      }
+    }
 
-    // identity verbs are flat - they have no target for a namespace to
-    // group them under. both spellings work; neither nudges the other
-    it('should leave the identity verbs flat and unnudged', function (done) {
-      nixt({ colors: false })
-      .run(surge + 'whoami --help')
-      .expect(function (result) {
-        should(result.stdout).not.match(/is now/)
-      }).end(done)
-    })
-
-    it('should keep `surge account <verb>` working as a silent alias', function (done) {
-      nixt({ colors: false })
-      .run(surge + 'account whoami --help')
-      .expect(function (result) {
-        should(result.stdout).not.match(/is now/)
-      }).end(done)
-    })
-
-    // the nudge is told apart by a subcommand, not a target. quoting bare
-    // `surge token` would aim a read (print the token in use) at a mint.
-    // --help so the nudge is asserted on routing alone: no network, and no
-    // way for a passing test to leave a real token behind
-    it('should quote the subcommand when nudging token add', function (done) {
-      nixt({ colors: false })
-      .run(surge + 'token add --help')
-      .expect(function (result) {
-        should(result.stdout).match(/`surge token add` is now `surge tokens add`/)
-      }).end(done)
-    })
-
-    it('should quote the subcommand when nudging token rem', function (done) {
-      nixt({ colors: false })
-      .run(surge + 'token rem tok-1a2b3c4d --help')
-      .expect(function (result) {
-        should(result.stdout).match(/`surge token rem` is now `surge tokens rem`/)
-      }).end(done)
-    })
-
-    it('should leave bare `surge token` unnudged - it has not moved', function (done) {
-      nixt({ colors: false })
-      .run(surge + 'token --help')
-      .expect(function (result) {
-        should(result.stdout).not.match(/is now/)
-      }).end(done)
-    })
+    it('should route the flat debug verbs silently', silent('status'))
+    it('should route the flat stats verbs silently', silent('usage'))
+    it('should route verb-first with a trailing domain silently', silent('status hitthefrontpage.com'))
+    it('should route target-first with a flat verb silently', silent('hitthefrontpage.com status'))
+    it('should route target-first with a namespaced verb silently', silent('hitthefrontpage.com debug status'))
+    it('should route `list <domain>` silently', silent('list hitthefrontpage.com'))
+    it('should route `token add` silently', silent('token add'))
+    it('should route `token rem` silently', silent('token rem tok-1a2b3c4d'))
+    it('should route bare `token` silently', silent('token'))
+    it('should leave the identity verbs flat and silent', silent('whoami'))
+    it('should keep `surge account <verb>` working as a silent alias', silent('account whoami'))
 
     it('should let a valid domain beat a same-named directory in help', function (done) {
       var dir = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-shadow-'))
