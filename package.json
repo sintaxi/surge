@@ -23,7 +23,7 @@
     "cli-table3": "0.6.5",
     "colors": "1.4.0",
     "human-readable-numbers": "0.9.5",
-    "ignore": "7.0.5",
+    "ignore": "7.0.9",
     "is-domain": "0.0.1",
     "minimist": "1.2.8",
     "moniker": "0.1.2",
@@ -38,7 +38,7 @@
     "xbytes": "1.9.1"
   },
   "devDependencies": {
-    "mocha": "11.7.6",
+    "mocha": "12.0.2",
     "nixt": "0.5.1",
     "should": "13.2.3"
   },
