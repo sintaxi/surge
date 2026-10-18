@@ -146,6 +146,22 @@ describe("surge " + testid + " using " + user, function () {
       }).end(done)
     })
 
+    // a file that exists is never a domain target - page.html looks like a
+    // domain, but `surge page.html <domain>` publishes the page
+    it('should route an existing file to publish, not read it as a domain', function (done) {
+      var dir = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-file-'))
+      fs.writeFileSync(path.join(dir, 'page.html'), '<h1>hi</h1>')
+      nixt({ colors: false })
+      .cwd(dir)
+      .run('node ' + path.resolve(pkg.bin) + endpoint + 'page.html file-route.example.com --help')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/PUBLISHING/)
+        should(result.stdout).not.match(/is not a surge command/)
+        should(result.stdout).not.match(/Aborted/)
+      }).end(done)
+    })
+
     it('should say no such directory for a missing path target', function (done) {
       nixt({ colors: false })
       .run(surge + './missing-dir-xyz --help')
