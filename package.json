@@ -1,7 +1,7 @@
 {
   "name": "surge",
   "version": "0.46.0",
-  "description": "Static Web Publishing",
+  "description": "Static web publishing. One command from a directory or HTML file to a live URL, with free custom domains and SSL.",
   "keywords": [
     "surge",
     "harp",
@@ -14,8 +14,18 @@
     "web",
     "jamstack",
     "frontend",
-    "spa"
+    "spa",
+    "html",
+    "static-hosting",
+    "custom-domain",
+    "ssl",
+    "ci",
+    "agent"
   ],
+  "homepage": "https://surge.sh",
+  "bugs": {
+    "url": "https://github.com/sintaxi/surge/issues"
+  },
   "author": "Brock Whitten <brock@chloi.io>",
   "bin": "./bin/surge",
   "dependencies": {
