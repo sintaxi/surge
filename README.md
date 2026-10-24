@@ -37,12 +37,12 @@ See [custom domains](https://surge.sh/docs/platform/custom-domains).
 
 ### CI and agents
 
-Mint a token on your own machine, then set it as `SURGE_TOKEN` wherever surge runs. No login step, no prompts:
+Mint a token on your own machine, then pass it with `--token` wherever surge runs. No login step, no prompts:
 
     surge tokens add --domain example.com -m "ci"
-    SURGE_TOKEN=… npx surge ./dist example.com
+    npx surge ./dist example.com --token <token>
 
-A token can be scoped to one domain. Publishing has [limits](https://surge.sh/docs/cli/publishing#publishing-limits) on every plan; a rate-limited publish answers with how long to wait. See [CI & automation](https://surge.sh/docs/cli/automation) for GitHub Actions and other runners.
+The `SURGE_TOKEN` environment variable works too, and keeps the token out of shell history and logs. A token can be scoped to one domain. Publishing has [limits](https://surge.sh/docs/cli/publishing#publishing-limits) on every plan; a rate-limited publish answers with how long to wait. See [CI & automation](https://surge.sh/docs/cli/automation) for GitHub Actions and other runners.
 
 ### Documentation
 
