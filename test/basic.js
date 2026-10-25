@@ -809,6 +809,8 @@ describe("surge " + testid + " using " + user, function () {
           should(result.stdout).match(/orgs <org> create/)
           should(result.stdout).match(/orgs <org> rename <slug>/)
           should(result.stdout).match(/orgs <org> remove/)
+          should(result.stdout).match(/orgs <org> join <code>/)
+          should(result.stdout).match(/orgs <org> members <email> invite/)
         }).end(done)
     })
 
@@ -836,6 +838,24 @@ describe("surge " + testid + " using " + user, function () {
         .code(1)
         .expect(function (result) {
           should(result.stdout).match(/org does not exist/)
+        }).end(done)
+    })
+
+    it('should not list members of an org the account is not in', function (done) {
+      nixt(opts)
+        .run(surge + 'orgs ' + testid + ' members')
+        .code(1)
+        .expect(function (result) {
+          should(result.stdout).match(/org does not exist/)
+        }).end(done)
+    })
+
+    it('should refuse joining with a code that is not valid', function (done) {
+      nixt(opts)
+        .run(surge + 'orgs ' + testid + ' join aaaa-bbbb-cccc-dddd')
+        .code(1)
+        .expect(function (result) {
+          should(result.stdout).match(/invite is not valid/)
         }).end(done)
     })
 
