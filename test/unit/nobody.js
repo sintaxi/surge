@@ -4,7 +4,7 @@ var helpers = require('../../lib/util/helpers')
 describe('nobodyToAsk', function () {
 
   var saved = {}
-  var keys = ['CI', 'SURGE_INTERACTIVE']
+  var keys = ['CI', 'SURGE_INTERACTIVE', 'TERM_PROGRAM']
   var tty
 
   beforeEach(function () {
@@ -51,6 +51,14 @@ describe('nobodyToAsk', function () {
     process.env.CI = 'true'
     process.env.SURGE_INTERACTIVE = '1'
     should(helpers.nobodyToAsk(req)).equal(null)
+  })
+
+  it('lets git bash (mintty) prompt from its pipe, unless CI is set', function () {
+    process.stdin.isTTY = undefined
+    process.env.TERM_PROGRAM = 'mintty'
+    should(helpers.nobodyToAsk(req)).equal(null)
+    process.env.CI = 'true'
+    helpers.nobodyToAsk(req).should.match(/CI is set/)
   })
 
   it('trusts an embedder that passes its own input stream', function () {
