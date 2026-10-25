@@ -1,3 +1,79 @@
+# surge 0.49
+
+This release is for anything that runs `surge` without a person at the
+keyboard: CI jobs, scripts and coding agents. The short version: **surge
+now fails when it can't do what you asked, instead of exiting as if it had.**
+
+## No credentials, no terminal: exit 1
+
+Run surge where nobody can answer a prompt (a CI job, an agent, input
+piped from `/dev/null`) with no token and no stored login, and it used to
+print `email:`, read nothing and exit `0`. The job went green with nothing
+published.
+
+Now it stops before prompting, says why on stderr, and exits `1`:
+
+    Aborted - not logged in and no terminal to ask. Run `surge login` in a terminal, or set SURGE_TOKEN.
+
+When the `CI` environment variable is set, surge treats the run as having
+nobody to ask even if a terminal is attached:
+
+    Aborted - not logged in and CI is set, so nobody to ask. Set SURGE_TOKEN, or unset CI to log in here.
+
+The same rule covers the other prompts. A missing project directory or
+domain names what's missing (`Try surge <path> <domain>`) instead of
+waiting for an answer that never comes.
+
+## `surge whoami` exits 1 when not authenticated
+
+`whoami` is the natural "am I logged in?" check at the top of a script, and
+it now fails when the answer is no. When you are authenticated it also names
+the token in use, by id, and what it can touch:
+
+    $ SURGE_TOKEN=... surge whoami
+
+       you@example.com
+       tok-1a2b3c4d · scoped to my-app.surge.sh
+
+An agent can check it was handed a token scoped to one domain without
+printing the token itself. A rejected `SURGE_TOKEN` no longer clears the
+login stored in `~/.netrc`.
+
+## `--force https` at publish
+
+    surge ./dist example.com --force https
+
+redirects all plain HTTP to HTTPS from that publish on. The setting sticks,
+like `surge example.com config --force https`. The value must be `https` or
+`http`; anything else stops before uploading.
+
+## Help that shows the whole workflow
+
+`surge --help` now lists previews (`--preview`), a revisions section
+(`revs`, `cutover`, `rollback`, `rollfore`, `discard`) and the two ways to
+authenticate without logging in (`--token`, `SURGE_TOKEN`).
+
+For one command's usage, ask for it:
+
+    surge cutover --help
+    surge help cutover
+    surge example.com rollback --help
+
+Commands with flags (publish, config, login) list them.
+
+## What might change for you
+
+- **A CI job that was green may turn red.** If its token was missing or
+  misspelled, it was never publishing. The failure is the fix: add the
+  token as a secret (`surge tokens add --domain <domain>` mints one).
+- **Scripts that run `surge whoami` under `set -e`** stop there when not
+  authenticated. Add `|| true` if it was only informational.
+- **`npx surge` always runs the latest release**, so these changes reach
+  pipelines that don't pin a version. Pin `surge@0.48.0` to keep the old
+  behaviour while you fix a job.
+
+---
+
 # surge 0.40
 
 The command line interface has been reorganized around a single idea: **you
