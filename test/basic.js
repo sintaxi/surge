@@ -798,6 +798,57 @@ describe("surge " + testid + " using " + user, function () {
     })
   })
 
+  // the test account's email is never verified, so creating stops at the
+  // verification refusal - the api suite covers create and rename
+  describe('orgs', function () {
+    it('should list no orgs and show the way in', function (done) {
+      nixt(opts)
+        .run(surge + 'orgs')
+        .expect(function (result) {
+          should(result.stdout).match(/Empty/)
+          should(result.stdout).match(/orgs <org> create/)
+          should(result.stdout).match(/orgs <org> rename <slug>/)
+          should(result.stdout).match(/orgs <org> remove/)
+        }).end(done)
+    })
+
+    it('should still list through the list alias', function (done) {
+      nixt(opts)
+        .run(surge + 'orgs list')
+        .expect(function (result) {
+          should(result.stdout).match(/Empty/)
+        }).end(done)
+    })
+
+    it('should refuse creating an org before the email is verified', function (done) {
+      nixt(opts)
+        .run(surge + 'orgs ' + testid + ' create')
+        .code(1)
+        .expect(function (result) {
+          should(result.stdout).match(/email must be verified/)
+          should(result.stdout).not.match(/Insufficient permission/)
+        }).end(done)
+    })
+
+    it('should not find an org the account is not in', function (done) {
+      nixt(opts)
+        .run(surge + 'orgs ' + testid)
+        .code(1)
+        .expect(function (result) {
+          should(result.stdout).match(/org does not exist/)
+        }).end(done)
+    })
+
+    it('should not remove an org the account is not in', function (done) {
+      nixt(opts)
+        .run(surge + 'orgs ' + testid + ' remove')
+        .code(1)
+        .expect(function (result) {
+          should(result.stdout).match(/org does not exist/)
+        }).end(done)
+    })
+  })
+
   describe('status', function () {
     var customDomain = testid + "-status.lvh.me"
     var proj = makeProject()
