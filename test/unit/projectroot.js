@@ -22,7 +22,8 @@ describe('_project cwd inference', function () {
     })
     var req = {
       argv: { _: [] },
-      configuration: {},
+      // an embedder's input stream - the stubbed read answers, not a terminal
+      configuration: { input: {} },
       project: null,
       read: function (opts, cb) { done(null, { prompted: true, def: opts.default }) }
     }

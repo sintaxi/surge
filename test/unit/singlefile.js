@@ -86,7 +86,7 @@ describe('single-file publish', function () {
 
     var single = function (file) {
       return {
-        argv: { _: [] }, configuration: { platform: 'surge.sh' },
+        argv: { _: [] }, configuration: { platform: 'surge.sh', input: {} }, // the stubbed read answers
         domain: null, project: made[made.push(fs.mkdtempSync(path.join(os.tmpdir(), 'surge-'))) - 1], singleFile: file
       }
     }

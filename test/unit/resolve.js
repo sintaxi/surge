@@ -14,7 +14,7 @@ describe('discovery.resolve', function () {
   var req = function (args, extra) {
     return Object.assign({
       argv: { _: args || [] },
-      configuration: { platform: 'surge.sh' },
+      configuration: { platform: 'surge.sh', input: {} }, // the stubbed read answers
       domain: null,
       project: null
     }, extra || {})

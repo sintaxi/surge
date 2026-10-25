@@ -9,6 +9,10 @@ var path = require('path')
 // touch the developer's real ~/.netrc (nixt clones process.env)
 process.env.HOME = process.env.USERPROFILE = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-test-'))
 
+// nixt answers prompts through a pipe, not a terminal - let the spawned
+// CLI prompt anyway. the no-terminal tests unset it per run.
+process.env.SURGE_INTERACTIVE = '1'
+
 var endpoint = typeof process.env.ENDPOINT !== 'undefined' ? ' -e ' + process.env.ENDPOINT + ' ' : ' '
 var surge = 'node ' + pkg.bin + endpoint
 
@@ -58,6 +62,49 @@ describe("surge " + testid + " using " + user, function () {
       .code(1)
       .expect(function (result) {
         should(result.stdout).match(/`foo` is not a surge argument/)
+      }).end(done)
+    })
+
+    it('should abort, not prompt, when not logged in and there is no terminal', function (done) {
+      nixt({ colors: false })
+      .env('SURGE_INTERACTIVE', '').env('CI', '').env('SURGE_TOKEN', '')
+      .run(surge + makeProject() + ' nobody-' + testid + '.surge.sh')
+      .code(1)
+      .expect(function (result) {
+        should(result.stderr).match(/Not logged in and no terminal to ask\. Run `surge login` in a terminal, or set SURGE_TOKEN\./)
+        should(result.stdout).not.match(/email:/)
+      }).end(done)
+    })
+
+    it('should abort, not prompt, when not logged in and CI is set', function (done) {
+      nixt({ colors: false })
+      .env('SURGE_INTERACTIVE', '').env('CI', 'true').env('SURGE_TOKEN', '')
+      .run(surge + makeProject() + ' nobody-' + testid + '.surge.sh')
+      .code(1)
+      .expect(function (result) {
+        should(result.stderr).match(/Not logged in and CI is set, so nobody to ask\. Set SURGE_TOKEN, or unset CI to log in here\./)
+        should(result.stdout).not.match(/email:/)
+      }).end(done)
+    })
+
+    it('should never fall back to the email prompt when a token is rejected', function (done) {
+      nixt({ colors: false })
+      .env('SURGE_TOKEN', 'bogus-' + testid)
+      .run(surge + makeProject() + ' nobody-' + testid + '.surge.sh')
+      .code(1)
+      .expect(function (result) {
+        should(result.stdout).match(/Invalid token/)
+        should(result.stdout).not.match(/email:/)
+      }).end(done)
+    })
+
+    it('should exit 1 from whoami when a token is rejected', function (done) {
+      nixt({ colors: false })
+      .env('SURGE_TOKEN', 'bogus-' + testid)
+      .run(surge + 'whoami')
+      .code(1)
+      .expect(function (result) {
+        should(result.stdout).match(/Not Authenticated - token rejected/)
       }).end(done)
     })
 
@@ -407,6 +454,7 @@ describe("surge " + testid + " using " + user, function () {
     it('should not return user when not authenticated', function (done) {
       nixt({ colors: false })
       .run(surge + 'whoami')
+      .code(1)
       .expect(function (result) {
         should(result.stdout).match(/Not Authenticated/)
       }).end(done)
@@ -985,6 +1033,7 @@ describe("surge " + testid + " using " + user, function () {
     it('should not be authenticated after nuke', function (done) {
       nixt({ colors: false })
         .run(surge + 'whoami')
+        .code(1)
         .expect(function (result) {
           should(result.stdout).match(/Not Authenticated/)
         }).end(done)
