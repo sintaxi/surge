@@ -71,7 +71,7 @@ describe("surge " + testid + " using " + user, function () {
       .run(surge + makeProject() + ' nobody-' + testid + '.surge.sh')
       .code(1)
       .expect(function (result) {
-        should(result.stderr).match(/Not logged in and no terminal to ask\. Run `surge login` in a terminal, or set SURGE_TOKEN\./)
+        should(result.stderr).match(/not logged in and no terminal to ask\. Run `surge login` in a terminal, or set SURGE_TOKEN\./)
         should(result.stdout).not.match(/email:/)
       }).end(done)
     })
@@ -82,7 +82,7 @@ describe("surge " + testid + " using " + user, function () {
       .run(surge + makeProject() + ' nobody-' + testid + '.surge.sh')
       .code(1)
       .expect(function (result) {
-        should(result.stderr).match(/Not logged in and CI is set, so nobody to ask\. Set SURGE_TOKEN, or unset CI to log in here\./)
+        should(result.stderr).match(/not logged in and CI is set, so nobody to ask\. Set SURGE_TOKEN, or unset CI to log in here\./)
         should(result.stdout).not.match(/email:/)
       }).end(done)
     })
@@ -155,30 +155,32 @@ describe("surge " + testid + " using " + user, function () {
     // both grammars are first-class. the verb-first, flat, and namespaced
     // spellings all dispatch silently - no nudge, no abort. --help so
     // routing is asserted alone: no network, nothing left behind.
-    var silent = function(form){
+    // --help after a verb prints that verb's usage, so the usage line
+    // proves which command the form routed to
+    var silent = function(form, usage){
       return function(done){
         nixt({ colors: false })
         .run(surge + form + ' --help')
         .code(0)
         .expect(function (result) {
-          should(result.stdout).match(/PUBLISHING/)
+          should(result.stdout).match(usage)
           should(result.stdout).not.match(/is now/)
           should(result.stdout).not.match(/Aborted/)
         }).end(done)
       }
     }
 
-    it('should route the flat debug verbs silently', silent('status'))
-    it('should route the flat stats verbs silently', silent('usage'))
-    it('should route verb-first with a trailing domain silently', silent('status hitthefrontpage.com'))
-    it('should route target-first with a flat verb silently', silent('hitthefrontpage.com status'))
-    it('should route target-first with a namespaced verb silently', silent('hitthefrontpage.com debug status'))
-    it('should route `list <domain>` silently', silent('list hitthefrontpage.com'))
-    it('should route `token add` silently', silent('token add'))
-    it('should route `token rem` silently', silent('token rem tok-1a2b3c4d'))
-    it('should route bare `token` silently', silent('token'))
-    it('should leave the identity verbs flat and silent', silent('whoami'))
-    it('should keep `surge account <verb>` working as a silent alias', silent('account whoami'))
+    it('should route the flat debug verbs silently', silent('status', /surge <domain> status/))
+    it('should route the flat stats verbs silently', silent('usage', /surge <domain> usage/))
+    it('should route verb-first with a trailing domain silently', silent('status hitthefrontpage.com', /surge hitthefrontpage\.com status/))
+    it('should route target-first with a flat verb silently', silent('hitthefrontpage.com status', /surge hitthefrontpage\.com status/))
+    it('should route target-first with a namespaced verb silently', silent('hitthefrontpage.com debug status', /surge hitthefrontpage\.com debug status/))
+    it('should route `list <domain>` silently', silent('list hitthefrontpage.com', /lists revisions/))
+    it('should route `token add` silently', silent('token add', /surge token\n/))
+    it('should route `token rem` silently', silent('token rem tok-1a2b3c4d', /surge token\n/))
+    it('should route bare `token` silently', silent('token', /surge token\n/))
+    it('should leave the identity verbs flat and silent', silent('whoami', /surge whoami/))
+    it('should keep `surge account <verb>` working as a silent alias', silent('account whoami', /surge account <verb>` is the same as/))
 
     it('should let a valid domain beat a same-named directory in help', function (done) {
       var dir = fs.mkdtempSync(path.join(os.tmpdir(), 'surge-shadow-'))
@@ -203,7 +205,9 @@ describe("surge " + testid + " using " + user, function () {
       .run('node ' + path.resolve(pkg.bin) + endpoint + 'page.html file-route.example.com --help')
       .code(0)
       .expect(function (result) {
-        should(result.stdout).match(/PUBLISHING/)
+        // the publish pair answers --help with publish's usage
+        should(result.stdout).match(/<page\.html> <domain>/)
+        should(result.stdout).match(/FLAGS/)
         should(result.stdout).not.match(/is not a surge command/)
         should(result.stdout).not.match(/Aborted/)
       }).end(done)
@@ -264,6 +268,79 @@ describe("surge " + testid + " using " + user, function () {
         // the path form is a power-user affordance, not a help line
         should(result.stdout).not.match(/<proj>/)
         should(result.stdout).not.match(/ns1\.surge\.world/)
+      }).end(done)
+    })
+
+    it('should show previews, revisions and auth on the help screen', function (done) {
+      nixt({ colors: false })
+      .run(surge + '--help')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/--preview/)
+        should(result.stdout).match(/REVISIONS/)
+        should(result.stdout).match(/<domain> cutover/)
+        should(result.stdout).match(/<domain> revs/)
+        should(result.stdout).match(/<domain> discard/)
+        should(result.stdout).match(/--token <token>/)
+        should(result.stdout).match(/SURGE_TOKEN/)
+        should(result.stdout).match(/surge <command> --help for one command/)
+      }).end(done)
+    })
+
+    it('should treat bare `surge help` as the help screen', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'help')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/PUBLISHING/)
+      }).end(done)
+    })
+
+    it('should print one command\'s usage for `surge help <verb>`', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'help cutover')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/surge <domain> cutover \[<rev>\]/)
+        should(result.stdout).not.match(/PUBLISHING/)
+      }).end(done)
+    })
+
+    it('should print one command\'s usage for `surge <verb> --help`', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'tokens --help')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/surge tokens add \[--domain <domain>\]/)
+        should(result.stdout).not.match(/PUBLISHING/)
+      }).end(done)
+    })
+
+    it('should echo the target in `surge <domain> <verb> --help`', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'example.com rollback --help')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/surge example\.com rollback/)
+      }).end(done)
+    })
+
+    it('should list the publish flags for publish help', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'publish --help')
+      .code(0)
+      .expect(function (result) {
+        should(result.stdout).match(/--preview/)
+        should(result.stdout).match(/--force https\|http/)
+      }).end(done)
+    })
+
+    it('should refuse help for a command that does not exist', function (done) {
+      nixt({ colors: false })
+      .run(surge + 'help nope')
+      .code(1)
+      .expect(function (result) {
+        should(result.stdout).match(/`nope` is not a surge command/)
       }).end(done)
     })
 
@@ -548,6 +625,34 @@ describe("surge " + testid + " using " + user, function () {
         should(result.stdout).match(new RegExp("Success! - Published to " + domain))
         resultedDomain = result.stdout.split('Success! - Published to')[1].trim().split(/\s+/)[0]
         resultedDomain.should.equal(domain)
+      }).end(done)
+    })
+
+    it('should refuse a --force value that is not https or http before uploading', function (done) {
+      nixt(opts)
+      .run(surge + proj + ' ' + domain + ' --force nope')
+      .code(1)
+      .expect(function (result) {
+        should(result.stdout).match(/`--force` takes https or http/)
+        should(result.stdout).not.match(/Success/)
+      }).end(done)
+    })
+
+    // a new .surge.sh domain already forces https, so http is the value
+    // that proves the publish flag landed
+    it('should take --force at publish', function (done) {
+      nixt(opts)
+      .run(surge + proj + ' ' + domain + ' --force http')
+      .expect(function (result) {
+        should(result.stdout).match(new RegExp("Success! - Published to " + domain))
+      }).end(done)
+    })
+
+    it('should keep the published --force as configuration', function (done) {
+      nixt(opts)
+      .run(surge + domain + ' config')
+      .expect(function (result) {
+        should(result.stdout).match(/force\s*:?\s*http(?!s)/)
       }).end(done)
     })
 
