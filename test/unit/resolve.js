@@ -323,6 +323,22 @@ describe('discovery.resolve', function () {
     })
   })
 
+  it('reads <org>:<domain> as the domain plus the org it is claimed for', function (done) {
+    var r = req(['acme:docs.acme.com'])
+    run({}, r, function (err, out) {
+      out.domain.should.equal('docs.acme.com')
+      r.org.should.equal('acme')
+      done()
+    })
+  })
+
+  it('never reads a scheme or a port as an org', function () {
+    should(helpers.splitOrg('https://example.com')).be.null()
+    should(helpers.splitOrg('example.com:8080')).be.null()
+    should(helpers.splitOrg('acme:./dist')).be.null()
+    helpers.splitOrg('Acme:new.surge.sh').should.eql({ org: 'acme', domain: 'new.surge.sh' })
+  })
+
   it('aborts when the prompt is cancelled', function (done) {
     helpers.read = function (opts, cb) { cb(null, undefined) }
     run({ prompt: true }, req([]), function (err, r) {
