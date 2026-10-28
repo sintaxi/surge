@@ -61,6 +61,57 @@ describe('codes', function () {
     out.should.match(/Success - foo\.com is now yours\./)
   })
 
+  // with someone at the terminal, claim checks first and asks
+  var ask = function (check, answer, argv) {
+    var script = `
+      var sdkPath = require.resolve("surge-sdk")
+      require.cache[sdkPath] = { exports: function(){ return {
+        // claim(code, creds, cb) claims; claim(code, { check }, creds, cb) checks
+        claim: function(code, opts, creds, cb){
+          if (cb) return cb(null, ${JSON.stringify(check)})
+          creds(null, { org: { slug: "acme", name: "Acme" }, role: "member", already: false })
+        }
+      }}}
+      var skin = require("./lib/util/skin")
+      var claim = require("./lib/middleware/claim")
+      skin({ configuration: { name: "surge" }, endpoint: { format: function(){ return "https://x" } }, argv: ${JSON.stringify(argv || { _: ["tiger73azqrk"] })}, creds: { token: "t" } }, [claim])
+    `
+    var out
+    try { out = execFileSync(process.execPath, ['-e', script], { cwd: root, encoding: 'utf8', input: answer, env: Object.assign({}, process.env, { SURGE_INTERACTIVE: "1", CI: "" }) }) }
+    catch (e) { out = (e.stdout || '') + (e.stderr || '') }
+    return out.replace(/\u001b\[\d+m/g, "")
+  }
+
+  var invite = { check: true, kind: "invite", org: { slug: "acme", name: "Acme Inc" }, role: "member", by: "fred@acme.com", expires_at: "2026-11-04T00:00:00.000Z", member: false }
+  var transfer = { check: true, kind: "transfer", domain: "docs.acme.com", from: { account: "fred@acme.com" }, by: "fred@acme.com", expires_at: "2026-11-04T00:00:00.000Z", yours: false }
+
+  it('claim shows an invite and joins on yes', function () {
+    var out = ask(invite, "y\n")
+    out.should.match(/Invite to acme \(Acme Inc\) as a member from fred@acme\.com · expires 2026-11-04/)
+    out.should.match(/Join\? \(y\/N\)/)
+    out.should.match(/Success - joined acme as a member\./)
+  })
+
+  it('claim shows a transfer and claims nothing on no', function () {
+    var out = ask(transfer, "\n")
+    out.should.match(/Transfer of docs\.acme\.com from fred@acme\.com · expires 2026-11-04/)
+    out.should.match(/Claim it\? \(y\/N\)/)
+    out.should.match(/Aborted - nothing claimed\. The code still works\./)
+    out.should.not.match(/Success/)
+  })
+
+  it('claim stops before spending an invite to an org you are in', function () {
+    var out = ask(Object.assign({}, invite, { member: true }), "y\n")
+    out.should.match(/Aborted - you're already in acme\. The code still works for someone else\./)
+    out.should.not.match(/Join\?/)
+  })
+
+  it('claim --yes does not ask', function () {
+    var out = ask(invite, "", { _: ["tiger73azqrk"], yes: true })
+    out.should.not.match(/\(y\/N\)/)
+    out.should.match(/Success - joined acme as a member\./)
+  })
+
   it('scrap cancels an invite or a transfer code', function () {
     run("scrap", ["tiger73azqrk"], { scrap: { rsp: { scrapped: "invite", org: { slug: "acme", name: "Acme" } } } })
       .should.match(/Success - scrapped the invite to acme\. It no longer works\./)
