@@ -962,8 +962,8 @@ describe("surge " + testid + " using " + user, function () {
           should(result.stdout).match(/orgs <org> create/)
           should(result.stdout).match(/orgs <org> rename <slug>/)
           should(result.stdout).match(/orgs <org> remove/)
-          should(result.stdout).match(/orgs <org> join <code>/)
-          should(result.stdout).match(/orgs <org> members <email> invite/)
+          should(result.stdout).match(/orgs <org> invite \[--admin\]/)
+          should(result.stdout).not.match(/members <email> invite/)
         }).end(done)
     })
 
