@@ -1008,7 +1008,9 @@ describe("surge " + testid + " using " + user, function () {
         .run(surge + 'orgs ' + testid + ' join aaaa-bbbb-cccc-dddd')
         .code(1)
         .expect(function (result) {
-          should(result.stdout).match(/invite is not valid/)
+          // every run spends one of the 10 failed claims an ip gets an hour;
+          // past that the api says so instead, which is printed the same way
+          should(result.stdout).match(/invite is not valid|too many codes that didn't work/)
         }).end(done)
     })
 
