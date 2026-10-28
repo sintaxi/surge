@@ -28,7 +28,7 @@ var run = function (mw, argv, stubs) {
 }
 
 var lines = function (out) {
-  return out.split("\n").filter(function (l) { return l.trim() })
+  return out.split("\n").map(function (l) { return l.replace(/\s+$/, "") }).filter(function (l) { return l.trim() })
 }
 
 describe('codes', function () {
@@ -49,6 +49,27 @@ describe('codes', function () {
       { hint: "tiger", role: "member", pending: true, invited_by: "fred@foo.com", expires_at: "2026-11-04T00:00:00.000Z" }
     ] } })
     out.should.match(/tiger…\s+member\s+invited · by fred@foo\.com · expires 2026-11-04/)
+  })
+
+  it('orgs lists every org with its members and their roles', function () {
+    var out = run("orgs", [], {
+      orgs: { rsp: [
+        { slug: "acme", name: "Acme Inc", role: "admin", created_at: "2026-10-20T00:00:00.000Z" },
+        { slug: "foo", name: "foo", role: "member", created_at: "2026-10-28T00:00:00.000Z" }
+      ] },
+      orgMembers: { rsp: [
+        { email: "a@b.c", role: "admin", pending: false },
+        { email: "jane@acme.com", role: "member", pending: false, bot: "grok" },
+        { hint: "tiger", role: "member", pending: true, invited_by: "a@b.c", expires_at: "2026-11-04T00:00:00.000Z" }
+      ] }
+    })
+    var rows = lines(out)
+    rows[0].should.match(/^\s+acme\s+Acme Inc\s+since 2026-10-20$/)
+    rows[1].should.match(/^\s+a@b\.c\s+admin\s+you$/)
+    rows[2].should.match(/^\s+jane@acme\.com\s+member\s+bot$/)
+    rows[3].should.match(/^\s+tiger…\s+member\s+invited · by a@b\.c · expires 2026-11-04$/)
+    rows[4].should.match(/^\s+foo\s+since 2026-10-28$/)
+    rows.should.have.lengthOf(8)
   })
 
   it('claim joins an org with an invite', function () {
@@ -77,7 +98,7 @@ describe('codes', function () {
       skin({ configuration: { name: "surge" }, endpoint: { format: function(){ return "https://x" } }, argv: ${JSON.stringify(argv || { _: ["tiger73azqrk"] })}, creds: { token: "t" } }, [claim])
     `
     var out
-    try { out = execFileSync(process.execPath, ['-e', script], { cwd: root, encoding: 'utf8', input: answer, env: Object.assign({}, process.env, { SURGE_INTERACTIVE: "1", CI: "" }) }) }
+    try { out = execFileSync(process.execPath, ['-e', script], { cwd: root, encoding: 'utf8', input: answer, env: Object.assign({}, process.env, { SURGE_INTERACTIVE: "1", CI: "", FORCE_COLOR: "1" }) }) }
     catch (e) { out = (e.stdout || '') + (e.stderr || '') }
     return out.replace(/\u001b\[\d+m/g, "")
   }
@@ -87,15 +108,13 @@ describe('codes', function () {
 
   it('claim shows an invite and joins on yes', function () {
     var out = ask(invite, "y\n")
-    out.should.match(/Invite to acme \(Acme Inc\) as a member from fred@acme\.com · expires 2026-11-04/)
-    out.should.match(/Join\? \(y\/N\)/)
+    out.should.match(/   Adds you as a member to the 'acme' org \(Acme Inc\)\.\n   From fred@acme\.com · expires 2026-11-04\n   Would you like to join\? \(y\/N\)/)
     out.should.match(/Success - joined acme as a member\./)
   })
 
   it('claim shows a transfer and claims nothing on no', function () {
     var out = ask(transfer, "\n")
-    out.should.match(/Transfer of docs\.acme\.com from fred@acme\.com · expires 2026-11-04/)
-    out.should.match(/Claim it\? \(y\/N\)/)
+    out.should.match(/   Makes you the owner of docs\.acme\.com\.\n   From fred@acme\.com · expires 2026-11-04\n   Would you like to claim it\? \(y\/N\)/)
     out.should.match(/Aborted - nothing claimed\. The code still works\./)
     out.should.not.match(/Success/)
   })
@@ -103,7 +122,7 @@ describe('codes', function () {
   it('claim stops before spending an invite to an org you are in', function () {
     var out = ask(Object.assign({}, invite, { member: true }), "y\n")
     out.should.match(/Aborted - you're already in acme\. The code still works for someone else\./)
-    out.should.not.match(/Join\?/)
+    out.should.not.match(/join\?/)
   })
 
   it('claim --yes does not ask', function () {
