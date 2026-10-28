@@ -72,6 +72,28 @@ describe('codes', function () {
     rows.should.have.lengthOf(8)
   })
 
+  var two = [{ email: "a@b.c", role: "admin", pending: false }, { email: "jane@acme.com", role: "member", pending: false }]
+  var alone = [{ email: "a@b.c", role: "admin", pending: false }, { hint: "tiger", role: "member", pending: true }]
+
+  it('orgs <org> leave removes you', function () {
+    run("orgs", ["acme", "leave"], { orgMembers: { rsp: two }, orgRevoke: { rsp: { email: "a@b.c", role: "member", pending: false } } })
+      .should.match(/Success - You left acme\./)
+    run("orgs", ["acme", "leave"], { orgMembers: { rsp: two }, orgRevoke: { error: { messages: ["an org needs at least one admin"], status: 409 } } })
+      .should.match(/an org needs at least one admin/)
+  })
+
+  it('orgs <org> leave as the last member removes the org', function () {
+    var out = run("orgs", ["acme", "leave"], { orgMembers: { rsp: alone }, orgRemove: { rsp: { slug: "acme", name: "acme" } } })
+    out.should.match(/Success - You left acme\. You were its last member, so it's removed\./)
+    out.should.match(/acme is free for anyone to use\./)
+  })
+
+  it('orgs <org> leave as the last member is refused like remove while it holds domains', function () {
+    var out = run("orgs", ["acme", "leave"], { orgMembers: { rsp: alone }, orgRemove: { error: { messages: ["org still holds 1 domain - transfer or tear them down first"], domains: ["docs.acme.com"], status: 409 } } })
+    out.should.match(/Error - org still holds 1 domain - transfer or tear them down first/)
+    out.should.match(/docs\.acme\.com/)
+  })
+
   it('claim joins an org with an invite', function () {
     var out = run("claim", ["tiger73azqrk"], { claim: { rsp: { org: { slug: "acme", name: "Acme" }, role: "member", already: false } } })
     out.should.match(/Success - joined acme as a member\./)
