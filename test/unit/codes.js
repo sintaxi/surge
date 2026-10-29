@@ -165,4 +165,11 @@ describe('codes', function () {
       .should.match(/Aborted - that code isn't valid/)
   })
 
+  // collaborator invites are closed: orgs share domains now
+  it('invite says invites are closed and points at orgs', function () {
+    var msg = "invites are closed - orgs share domains now: `surge orgs <org> create`, then `surge example.com transfer <org>`"
+    var out = run("invite", ["example.com", "jane@example.com"], { invite: { rsp: { invites: [{ domain: "example.com", email: "jane@example.com", invite: msg, status: "not sent" }] } } })
+    lines(out).should.eql(["   Aborted - " + msg])
+  })
+
 })
