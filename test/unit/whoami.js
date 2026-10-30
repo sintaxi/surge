@@ -44,6 +44,14 @@ describe('whoami token line', function () {
     })
   })
 
+  it('names an org token by its org', function (done) {
+    run({ email: 'acme (tok-1a2b3c4d)', org: { slug: 'acme', name: 'Acme' }, token: { id: 'tok-1a2b3c4d', scope: [], org: 'acme' } }, function (lines) {
+      lines.should.containEql('acme (tok-1a2b3c4d)')
+      lines.should.containEql('tok-1a2b3c4d · org token for acme')
+      done()
+    })
+  })
+
   it('prints only the email when the api sends no token', function (done) {
     run({ email: 'a@b.com' }, function (lines) {
       lines.should.eql(['a@b.com'])
