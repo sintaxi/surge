@@ -1,6 +1,6 @@
 {
   "name": "surge",
-  "version": "0.53.0",
+  "version": "0.54.0",
   "description": "Static web publishing. One command from a directory or HTML file to a live URL, with free custom domains and SSL.",
   "keywords": [
     "surge",
