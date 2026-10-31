@@ -66,3 +66,39 @@ describe('nobodyToAsk', function () {
     should(helpers.nobodyToAsk({ configuration: { input: {} } })).equal(null)
   })
 })
+
+describe('redraws', function () {
+
+  var saved
+  var tty
+
+  beforeEach(function () {
+    saved = process.env.CI
+    delete process.env.CI
+    tty = process.stderr.isTTY
+  })
+
+  afterEach(function () {
+    if (saved === undefined) delete process.env.CI
+    else process.env.CI = saved
+    process.stderr.isTTY = tty
+  })
+
+  it('redraws bars on a terminal', function () {
+    process.stderr.isTTY = true
+    helpers.redraws().should.equal(true)
+  })
+
+  it('prints lines when stderr is not a terminal', function () {
+    process.stderr.isTTY = undefined
+    helpers.redraws().should.equal(false)
+  })
+
+  it('prints lines when CI is set, even with a terminal', function () {
+    process.stderr.isTTY = true
+    process.env.CI = 'true'
+    helpers.redraws().should.equal(false)
+    process.env.CI = '0'
+    helpers.redraws().should.equal(true)
+  })
+})
