@@ -228,6 +228,39 @@ describe('tables', function () {
       box.split('\n')[0].length.should.equal(fleet.split('\n')[0].length)
     })
 
+    it('marks each edge once, with the worse of purge and liveness', function () {
+      var mark = function (c, l) {
+        var s = Object.assign({}, servers[3], { confirmationColor: c, statusColor: l })
+        return strip(tables.instances([s], { via: 'ns' }).toString()).split('\n')[1].split('│').slice(-2)[0].trim()
+      }
+      mark('green', 'green').should.equal('✔')
+      mark('green', 'grey').should.equal('✔')     // purge reached it, liveness unknown
+      mark('green', 'yellow').should.equal('◍')
+      mark('red', 'green').should.equal('✗')      // purge never reached a live node
+      mark('grey', 'grey').should.equal('◍')
+    })
+
+    it('narrow: drops the columns every edge shares — type and provider', function () {
+      var w   = tables.narrowWidths([], { via: 'ns' }, servers)
+      var out = strip(tables.instances(servers, { via: 'ns' }, w.fleet).toString())
+      out.should.not.match(/HTTP/)
+      out.should.not.match(/D\.Ocean/)
+      out.should.match(/sfo\.surge\.sh/)
+      out.should.match(/138\.197\.235\.123/)
+    })
+
+    it('narrow: sizes the verdicts box and the fleet as one grid', function () {
+      var certs = [{ subjectAltNames: ['example.com', 'www.example.com'], certName: 'uploaded', expInDays: 9 }]
+      var w     = tables.narrowWidths(certs, { via: 'a' }, servers)
+      var box   = strip(tables.verdicts(certs, { via: 'a' }, w.verdicts).toString()).split('\n')
+      var fleet = strip(tables.instances(servers, { via: 'a' }, w.fleet).toString()).split('\n')
+      box[0].length.should.equal(fleet[0].length)
+      box[0].indexOf('┬').should.equal(fleet[0].indexOf('┬'))           // first column
+      box[0].lastIndexOf('┬').should.equal(fleet[0].lastIndexOf('┬'))   // mark under the verdict
+      box.join('\n').should.match(/expires in 9 days/)                 // the longest verdict fits whole
+      fleet[0].length.should.be.below(80)
+    })
+
     it('replaces the static nameserver advice when the verdict is present', function () {
       tables.instances(servers, { via: 'ns' }).toString().should.not.match(/ns1\.surge\.world/)
     })
