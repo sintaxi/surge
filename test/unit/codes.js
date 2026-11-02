@@ -33,9 +33,9 @@ var lines = function (out) {
 
 describe('codes', function () {
 
-  it('orgs <org> invite prints only the code', function () {
+  it('orgs <org> invite prints the code and the link to claim it in a browser', function () {
     var out = run("orgs", ["acme", "invite"], { orgInvite: { rsp: { code: "tiger73azqrk", hint: "tiger", role: "member", expires_at: "2026-11-04T00:00:00.000Z" } } })
-    lines(out).should.eql(["   Invite Code: tiger73azqrk"])
+    lines(out).should.eql(["   Invite Code: tiger73azqrk", "   Claim Link:  https://auth.surge.sh/claim/tiger73azqrk"])
   })
 
   it('members <email> invite says invites are codes now', function () {

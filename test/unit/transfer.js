@@ -4,7 +4,7 @@ var { execFileSync } = require('child_process')
 
 var root = path.join(__dirname, '..', '..')
 
-// bare `transfer` prints the code and nothing else
+// bare `transfer` prints the code and its claim link
 var run = function (argv, body) {
   var script = `
     var sdkPath = require.resolve("surge-sdk")
@@ -20,10 +20,10 @@ var run = function (argv, body) {
 
 describe('transfer', function () {
 
-  it('prints only the transfer code', function () {
+  it('prints the transfer code and the link to claim it in a browser', function () {
     var out = run([], { domain: "foo.com", code: "tiger73azqrk", expires_at: "2026-11-04T04:25:03.518Z" })
     var lines = out.replace(/\u001b\[\d+m/g, "").split("\n").filter(function (l) { return l.trim() })
-    lines.should.eql(["   Transfer Code: tiger73azqrk"])
+    lines.should.eql(["   Transfer Code: tiger73azqrk", "   Claim Link:    https://auth.surge.sh/claim/tiger73azqrk"])
   })
 
 })
