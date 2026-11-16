@@ -1046,7 +1046,8 @@ describe("surge " + testid + " using " + user, function () {
           should(result.stdout).match(new RegExp("Success! - Published to " + customDomain))
           should(result.stdout).match(/not resolving to Surge/)
           should(result.stdout).match(/waiting on dns/)
-          should(result.stdout).match(/CNAME geo\.surge\.world/)
+          // one action since slushi b629ebc - debug status has the records
+          should(result.stdout).match(new RegExp("point " + customDomain.replace(/\./g, "\\.") + " at geo\\.surge\\.world"))
           // the old records block below the result is gone
           should(result.stdout).not.match(/not pointed at surge yet/)
         }).end(done)
